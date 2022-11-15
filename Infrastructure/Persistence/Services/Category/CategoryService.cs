@@ -4,9 +4,11 @@ using Application.Services;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -48,10 +50,56 @@ namespace Persistence.Services
             return category;
         }
 
-        public async Task<List<Category>> categoryList()
+        public async Task<List<CategoryListDto>> categoryList()
         {
-            List<Category> categories = await _categoryReadRepository.GetAllWithInclude(true, x => x.SubCategories, x => x.ParentCategory).ToListAsync();
-            return categories;
+            List<Category> categories = await _categoryReadRepository.GetAllWithInclude(true, x => x.ParentCategory).OrderBy(x => x.Level).ToListAsync();
+
+            //Sorting for categories level
+
+            List<CategoryListDto> categoryListDtos = new List<CategoryListDto>();
+
+            CategoryListDto categoryListDto = new CategoryListDto();
+
+            categoryListDtos=
+                    categories
+                     .Where(c => c.ParentCategoryId == null)
+                     .OrderBy(x => x.Level)
+                     .Select(c => new CategoryListDto
+                     {
+                         key = (c.Level - 1).ToString(),
+                         data = new CategoryDto
+                         {
+                             Code = c.Code,
+                             Name = c.Name,
+                             Level = c.Level,
+                             Description = c.Description,
+                         },
+                         children = GetChildren(c.SubCategories, c.Id, (c.Level - 1).ToString())
+                     })
+                     .ToList();
+
+            return categoryListDtos;
+        }
+
+        private List<CategoryListDto> GetChildren(ICollection<Category>? category, int parentId,string key)
+        {
+
+            return category
+                    .Where(c => c.ParentCategoryId == parentId)
+                    .OrderBy(x => x.Level)
+                    .Select(c => new CategoryListDto
+                    {
+                        key = key + "-" + (c.Level-1).ToString(),
+                        data = new CategoryDto
+                        {
+                            Code = c.Code,
+                            Name = c.Name,
+                            Level = c.Level,
+                            Description = c.Description,
+                        },
+                        children = GetChildren(c.SubCategories, c.Id,key+"-"+ (c.Level - 1).ToString())
+                    })
+                    .ToList();
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Application.Services
     public interface ICategoryService
     {
         Task<bool> saveCategory(CategoryDto categoryDto);
-        Task<List<Category>> categoryList();
+        Task<List<CategoryListDto>> categoryList();
         Task<Category> getCategoryById(int id);
     }
 }

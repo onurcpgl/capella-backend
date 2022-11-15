@@ -9,6 +9,10 @@ namespace Domain.Entities
 {
     public class Category: BaseEntity
     {
+        public Category()
+        {
+            SubCategories=new List<Category>();
+        }
         public string Code { get; set; }
 
         public string Name { get; set; }
@@ -21,7 +25,7 @@ namespace Domain.Entities
 
         public int Level { get; set; }
 
-        public ICollection<Category> SubCategories { get; set; }
+        public ICollection<Category>? SubCategories { get; set; }
 
         public ICollection<Product> Products { get; set; }
 
