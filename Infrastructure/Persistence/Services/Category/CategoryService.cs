@@ -31,6 +31,12 @@ namespace Persistence.Services
         public async Task<bool> saveCategory(CategoryDto categoryDto)
         {
             var category = _mapper.Map<Category>(categoryDto);
+            if (categoryDto.ParentCategory !=null)
+            {
+                var categoryParent = await _categoryReadRepository.GetWhere(x => x.Code == categoryDto.ParentCategory.Code).FirstOrDefaultAsync();
+                category.ParentCategory = categoryParent;
+            }
+           
             category.Code = Guid.NewGuid().ToString();
             var result = await _categoryWriteRepository.AddAsync(category);
             if (!result)
@@ -52,13 +58,11 @@ namespace Persistence.Services
 
         public async Task<List<CategoryListDto>> categoryList()
         {
-            List<Category> categories = await _categoryReadRepository.GetAllWithInclude(true, x => x.ParentCategory).OrderBy(x => x.Level).ToListAsync();
+            List<Category> categories = await _categoryReadRepository.GetAll().ToListAsync();
 
             //Sorting for categories level
 
             List<CategoryListDto> categoryListDtos = new List<CategoryListDto>();
-
-            CategoryListDto categoryListDto = new CategoryListDto();
 
             categoryListDtos=
                     categories
@@ -67,6 +71,7 @@ namespace Persistence.Services
                      .Select(c => new CategoryListDto
                      {
                          key = (c.Level - 1).ToString(),
+                         label=c.Name,
                          data = new CategoryDto
                          {
                              Code = c.Code,
@@ -89,6 +94,7 @@ namespace Persistence.Services
                     .OrderBy(x => x.Level)
                     .Select(c => new CategoryListDto
                     {
+                        label=c.Name,
                         key = key + "-" + (c.Level-1).ToString(),
                         data = new CategoryDto
                         {
