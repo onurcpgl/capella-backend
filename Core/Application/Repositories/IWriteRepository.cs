@@ -16,7 +16,7 @@ namespace Application.Repositories
         bool Remove(T model);
         bool RemoveRange(List<T> datas);
         Task<bool> RemoveAsync(int id);
-        bool Update(T model);
+        Task<bool> Update(T model);
         Task<IDbContextTransaction> DbTransactional();
 
 

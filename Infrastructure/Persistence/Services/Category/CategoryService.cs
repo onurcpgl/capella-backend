@@ -25,7 +25,6 @@ namespace Persistence.Services
             _categoryReadRepository = categoryReadRepository;
             _categoryWriteRepository = categoryWriteRepository;
             _mapper = mapper;
-
         }
 
         public async Task<bool> saveCategory(CategoryDto categoryDto)
@@ -106,6 +105,31 @@ namespace Persistence.Services
                         children = GetChildren(c.SubCategories, c.Id,key+"-"+ (c.Level - 1).ToString())
                     })
                     .ToList();
+        }
+
+        public async Task<bool> changeLocationCategory(CategoryReorderDto categoryReorderDto)
+        {
+           
+            var category = await _categoryReadRepository.GetWhere(x => x.Code == categoryReorderDto.sourceCode).FirstOrDefaultAsync();
+            category.Level = categoryReorderDto.level;
+            var categoryParent = await _categoryReadRepository.GetWhere(x => x.Code == categoryReorderDto.destinationCode).FirstOrDefaultAsync();
+            category.ParentCategory = categoryParent;
+            var status = await _categoryWriteRepository.Update(category);
+            List<Category> categories = await _categoryReadRepository.GetWhereWithInclude(x => categoryReorderDto.level >= x.Level && x.Code != categoryReorderDto.sourceCode &&x.ParentCategory.Code == categoryReorderDto.destinationCode, true, x => x.SubCategories, x => x.ParentCategory).ToListAsync();
+            foreach (var item in categories)
+            {
+                    
+                item.Level = item.Level + 1;
+
+                bool updateItem = await _categoryWriteRepository.Update(item);
+                if (!updateItem)
+                {
+                    return false;
+                }
+            }
+            
+            return true;
+
         }
     }
 }

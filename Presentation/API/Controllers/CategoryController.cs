@@ -51,5 +51,19 @@ namespace API.Controllers
             return Ok(result);
         }
 
+        [HttpPost("/category/reorder")]
+        public async Task<IActionResult> CategoryReorder([FromBody] CategoryReorderDto categoryReorderDto)
+        {
+            var result = await _categoryService.changeLocationCategory(categoryReorderDto);
+            if (!result)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                return Ok(true);
+            }
+        }
+
     }
 }

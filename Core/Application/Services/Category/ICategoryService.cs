@@ -13,5 +13,6 @@ namespace Application.Services
         Task<bool> saveCategory(CategoryDto categoryDto);
         Task<List<CategoryListDto>> categoryList();
         Task<Category> getCategoryById(int id);
+        Task<bool> changeLocationCategory(CategoryReorderDto categoryReorderDto);
     }
 }

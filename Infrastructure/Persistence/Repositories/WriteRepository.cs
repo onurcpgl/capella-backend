@@ -52,10 +52,11 @@ namespace Persistence.Repositories
             return true;
         }
 
-        public bool Update(T model)
+        public async Task<bool> Update(T model)
         {
             EntityEntry<T> entityEntry = Table.Update(model);
-            return entityEntry.State == EntityState.Modified;
+            entityEntry.State = EntityState.Modified;
+            return _context.SaveChanges() > -1;
         }
 
         public Task<IDbContextTransaction> DbTransactional()
