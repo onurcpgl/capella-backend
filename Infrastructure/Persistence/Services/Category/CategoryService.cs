@@ -109,25 +109,78 @@ namespace Persistence.Services
 
         public async Task<bool> changeLocationCategory(CategoryReorderDto categoryReorderDto)
         {
-           
             var category = await _categoryReadRepository.GetWhere(x => x.Code == categoryReorderDto.sourceCode).FirstOrDefaultAsync();
+            
+            int oldLevel = category.Level;
             category.Level = categoryReorderDto.level;
             var categoryParent = await _categoryReadRepository.GetWhere(x => x.Code == categoryReorderDto.destinationCode).FirstOrDefaultAsync();
-            category.ParentCategory = categoryParent;
-            var status = await _categoryWriteRepository.Update(category);
-            List<Category> categories = await _categoryReadRepository.GetWhereWithInclude(x => categoryReorderDto.level >= x.Level && x.Code != categoryReorderDto.sourceCode &&x.ParentCategory.Code == categoryReorderDto.destinationCode, true, x => x.SubCategories, x => x.ParentCategory).ToListAsync();
-            foreach (var item in categories)
+           
+            
+            
+            if (categoryReorderDto.destinationCode == null && categoryParent != null)
             {
-                    
-                item.Level = item.Level + 1;
+                category.ParentCategory = categoryParent;
+                var status = await _categoryWriteRepository.Update(category);
+                List<Category> incCategories = await _categoryReadRepository.GetWhereWithInclude(x => x.Level >= categoryReorderDto.level && x.Level <= oldLevel
+                    && x.Code != categoryReorderDto.sourceCode && x.ParentCategory.Code == categoryReorderDto.destinationCode, true, x => x.ParentCategory).ToListAsync();
 
-                bool updateItem = await _categoryWriteRepository.Update(item);
-                if (!updateItem)
+                List<Category> decCategories = await _categoryReadRepository.GetWhereWithInclude(x => x.Level >= oldLevel && x.Level <= categoryReorderDto.level
+                   && x.Code != categoryReorderDto.sourceCode && x.ParentCategory.Code == categoryReorderDto.destinationCode, true, x => x.ParentCategory).ToListAsync();
+
+                foreach (var item in incCategories)
                 {
-                    return false;
+
+                    item.Level = item.Level + 1;
+                    bool updateItem = await _categoryWriteRepository.Update(item);
+                    if (!updateItem)
+                    {
+                        return false;
+                    }
+                }
+
+                foreach (var item in decCategories)
+                {
+                    item.Level = item.Level - 1;
+                    bool updateItem = await _categoryWriteRepository.Update(item);
+                    if (!updateItem)
+                    {
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                category.ParentCategory = categoryParent;
+                var status = await _categoryWriteRepository.Update(category);
+                List<Category> incCategories = await _categoryReadRepository.GetWhereWithInclude(x => x.Level >= categoryReorderDto.level
+                   && x.Code != categoryReorderDto.sourceCode && x.ParentCategory.Code == categoryReorderDto.destinationCode, true, x => x.ParentCategory).ToListAsync();
+
+                List<Category> decCategories = await _categoryReadRepository.GetWhereWithInclude(x => x.Level <= categoryReorderDto.level
+                   && x.Code != categoryReorderDto.sourceCode && x.ParentCategory.Code == categoryReorderDto.destinationCode, true, x => x.ParentCategory).ToListAsync();
+
+                foreach (var item in incCategories)
+                {
+
+                    item.Level = item.Level + 1;
+                    bool updateItem = await _categoryWriteRepository.Update(item);
+                    if (!updateItem)
+                    {
+                        return false;
+                    }
+                }
+
+                foreach (var item in decCategories)
+                {
+                    item.Level = item.Level - 1;
+                    bool updateItem = await _categoryWriteRepository.Update(item);
+                    if (!updateItem)
+                    {
+                        return false;
+                    }
                 }
             }
             
+
             return true;
 
         }
