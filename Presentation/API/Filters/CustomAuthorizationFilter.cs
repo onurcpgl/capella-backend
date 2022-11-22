@@ -62,6 +62,24 @@ namespace API.Filters
                             await next();
 
                         }
+                        else
+                        {
+                            context.Result = new ObjectResult(context.ModelState)
+                            {
+                                Value = "An error has occured while authorization.",
+                                StatusCode = Microsoft.AspNetCore.Http.StatusCodes.Status401Unauthorized
+                            };
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        context.Result = new ObjectResult(context.ModelState)
+                        {
+                            Value = "An error has occured while authorization.",
+                            StatusCode = Microsoft.AspNetCore.Http.StatusCodes.Status401Unauthorized
+                        };
+                        return;
                     }
                 }
                 catch (Exception ex)

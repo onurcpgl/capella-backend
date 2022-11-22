@@ -23,7 +23,7 @@ namespace API.Controllers
         }
 
         [HttpPost("/product")]
-        [ServiceFilter(typeof(CustomAuthorizationFilter)), PermissionAttribute("product_added")]
+        //[ServiceFilter(typeof(CustomAuthorizationFilter)), PermissionAttribute("product_added")]
         public async Task<IActionResult> AddProduct([FromBody] ProductDto productDto)
         {
             var result = await _productService.saveProduct(productDto);

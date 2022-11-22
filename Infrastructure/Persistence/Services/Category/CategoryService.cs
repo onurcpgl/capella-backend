@@ -36,10 +36,13 @@ namespace Persistence.Services
                 var categoryParent = await _categoryReadRepository.GetWhere(x => x.Code == categoryDto.ParentCategory.Code).FirstOrDefaultAsync();
                 category.ParentCategory = categoryParent;
             }
+
             int? maxLevel = await _categoryReadRepository.GetWhere(x => x.ParentCategory == category.ParentCategory).MaxAsync(x=> (int?) x.Level);
+
             category.Level = (maxLevel ?? 0) + 1;
             category.Code = Guid.NewGuid().ToString();
             var result = await _categoryWriteRepository.AddAsync(category);
+
             if (!result)
             {
                 return false;
