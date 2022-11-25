@@ -1,8 +1,9 @@
 ﻿using Application.DataTransferObject;
 using Application.Repositories;
-using Application.Services.Unit;
+using Application.Services;
 using AutoMapper;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,6 +40,10 @@ namespace Persistence.Services
             }
         }
 
-        
+        public async Task<List<Unit>> unitList()
+        {
+            List<Unit> units = await _unitReadRepository.GetAll().ToListAsync();
+            return units;
+        }
     }
 }

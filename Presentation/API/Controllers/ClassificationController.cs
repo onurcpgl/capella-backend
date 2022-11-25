@@ -55,12 +55,12 @@ namespace API.Controllers
 
         }
 
-        //[HttpGet("/classification")]
-        //public async Task<IActionResult> ClassificationList()
-        //{
-        //    List<Classification> classification = await _classificationReadRepository.GetAll().ToListAsync();
-        //    return Ok(classification);
-        //}
+        [HttpGet("/classifications")]
+        public async Task<IActionResult> ClassificationList()
+        {
+            List<Classification> classification = await _classificationService.getAll();
+            return Ok(classification);
+        }
 
         //[HttpGet("/classification/{id}")]
         //public async Task<IActionResult> ClassificationGetById(int id)

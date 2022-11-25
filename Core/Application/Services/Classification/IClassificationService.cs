@@ -15,5 +15,7 @@ namespace Application.Services
         Task<bool> saveClassificationAttribute(Classification classification, Domain.Entities.Unit unit);
 
         Task<bool> saveClassificationAttributeValue(ClassificationAttributeValueDto classificationAttributeValueDto);
+
+        Task<List<Classification>> getAll();
     }
 }

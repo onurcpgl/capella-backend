@@ -1,7 +1,7 @@
 ﻿using Application.DataTransferObject;
 using Application.Repositories;
 using Application.Repositories.ProductAbstract;
-using Application.Services.Unit;
+using Application.Services;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
@@ -35,6 +35,13 @@ namespace API.Controllers
             {
                 return Ok(true);
             }
+        }
+
+        [HttpGet("/units")]
+        public async Task<IActionResult> UnitList()
+        {
+            var result = await _unitService.unitList();
+            return Ok(result);
         }
     }
 }

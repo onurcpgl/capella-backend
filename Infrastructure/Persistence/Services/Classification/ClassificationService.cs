@@ -3,6 +3,7 @@ using Application.Repositories;
 using Application.Repositories.ProductAbstract;
 using Application.Services;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -103,6 +104,13 @@ namespace Persistence.Services
             product = _productReadRepository.GetWhere(x => x.Code == productCode).FirstOrDefault();
             classificationAttributeValue.Products.Add(product);
             return await _classificationAttributeValueWriteRepository.AddAsync(classificationAttributeValue);
+        }
+
+
+        public async Task<List<Classification>> getAll()
+        {
+            List<Classification> classifications = await _classificationReadRepository.GetAllWithInclude(true,x=> x.Categories).Include(y=> y.ClassificationAttributes).ThenInclude(z=>z.Unit).ToListAsync();
+            return classifications;
         }
     }
 }
