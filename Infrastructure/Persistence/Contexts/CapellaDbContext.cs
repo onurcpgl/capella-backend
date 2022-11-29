@@ -46,6 +46,13 @@ namespace Persistence.Contexts
                 .WithMany(p => p.Classifications)
                 .UsingEntity(j => j.ToTable("CategoriesClassifications"));
 
+
+            modelBuilder
+                .Entity<Product>()
+                .HasMany(p => p.Medias)
+                .WithMany(m => m.Products)
+                .UsingEntity(j => j.ToTable("ProductsMedias"));
+
             modelBuilder
                 .Entity<Classification>()
                 .HasMany(p => p.ClassificationAttributes)

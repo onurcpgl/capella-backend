@@ -59,9 +59,9 @@ namespace Persistence.Repositories
             return _context.SaveChanges() > -1;
         }
 
-        public Task<IDbContextTransaction> DbTransactional()
+        public async Task<IDbContextTransaction> DbTransactional()
         {
-            return _context.Database.BeginTransactionAsync();
+            return await _context.Database.BeginTransactionAsync();
         }
 
         

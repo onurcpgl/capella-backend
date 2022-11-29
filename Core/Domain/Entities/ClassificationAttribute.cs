@@ -13,8 +13,8 @@ namespace Domain.Entities
         {
             Classifications = new List<Classification>();
         }
-        public string Code { get; set; }
-        public Unit Unit { get; set; }
+        public string? Code { get; set; }
+        public Unit? Unit { get; set; }
         public ICollection<Classification> Classifications { get; set; }
     }
 }

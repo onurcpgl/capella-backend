@@ -1,8 +1,10 @@
 ﻿using Application.DataTransferObject;
+using Application.Repositories;
 using Application.Repositories.ProductAbstract;
 using Application.Services;
 using AutoMapper;
 using Domain.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -15,7 +17,9 @@ namespace Persistence.Services
     public class ProductService : IProductService
     {
         private readonly IProductWriteRepository _productWriteRepository;
+        private readonly IMediaService _mediaService;
         private readonly IProductReadRepository _productReadRepository;
+        private readonly ICategoryReadRepository _categoryReadRepository;
         private readonly IMapper _mapper;
 
         public ProductService(IProductWriteRepository productWriteRepository, IProductReadRepository productReadRepository, IMapper mapper)
@@ -26,19 +30,37 @@ namespace Persistence.Services
         }
 
        
-        public async Task<bool> saveProduct(ProductDto productDto)
+        public async Task<bool> saveProduct(ProductDto productDto, List<IFormFile> formFiles)
         {
-            var product = _mapper.Map<Product>(productDto);
+            Product product = new();
+            product.Name = productDto.Name;
+            product.Description = productDto.Description;
+            product.Active = productDto.Active;
             product.Code = Guid.NewGuid().ToString();
-            var result = await _productWriteRepository.AddAsync(product);
-            if (!result)
+
+            var category = new HashSet<Category>();
+            foreach (var item in productDto.Categories)
             {
-                return false;
+                var cat = _categoryReadRepository.GetWhere(x => x.Code == item.Code).FirstOrDefault();
+                category.Add(cat);
             }
-            else
+            product.Categories = category;
+
+
+            if (formFiles.Count > 0)
             {
-                return true;
+                var medias = new HashSet<Media>();
+                foreach (var item in formFiles)
+                {
+                    var media = await _mediaService.storage(item, true);
+                    medias.Add(media);
+                }
+                product.Medias = medias;
+                
             }
+
+            return true;
+            
 
         }
         public async Task<List<Product>> productList()
@@ -51,6 +73,7 @@ namespace Persistence.Services
             var product = await _productReadRepository.GetByIdAsync(productId);
             return product;
 
-        }       
+        }
+
     }
 }

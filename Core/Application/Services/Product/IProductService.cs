@@ -1,5 +1,6 @@
 ﻿using Application.DataTransferObject;
 using Domain.Entities;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Application.Services
 {
     public interface IProductService
     {
-        Task<bool> saveProduct(ProductDto productDto);
+        Task<bool> saveProduct(ProductDto productDto, List<IFormFile> formFiles);
         Task<List<Product>> productList();
         Task<Product> getProductById(int productId);
     }

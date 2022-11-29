@@ -38,47 +38,54 @@ namespace Persistence.Services
         }
         public async Task<bool> saveClassification(ClassificationDto classificationDto)
         {
+            
             Classification classification = new();
 
             classification.Name = classificationDto.Name;
             classification.Code = Guid.NewGuid().ToString();
             classification.DataType = (Domain.Enums.DataType)classificationDto.DataType;
-            using(var transaction = await _classificationWriteRepository.DbTransactional())
-            {
-                var category = new HashSet<Category>();
-                foreach (var item in classificationDto.Categories)
+            var transaction = await _classificationWriteRepository.DbTransactional();
+          
+                try
                 {
-                    var cat = _categoryReadRepository.GetWhere(x => x.Code == item.Code).FirstOrDefault();
-                    category.Add(cat);
-                }
-                classification.Categories = category;
+                    var category = new HashSet<Category>();
+                    foreach (var item in classificationDto.Categories)
+                    {
+                        var cat = _categoryReadRepository.GetWhere(x => x.Code == item.Code).FirstOrDefault();
+                        category.Add(cat);
+                    }
+                    classification.Categories = category;
 
-                var classificationAttributes = new HashSet<ClassificationAttribute>();
+                    var classificationAttributes = new HashSet<ClassificationAttribute>();
 
-                classification.ClassificationAttributes = classificationAttributes;
+                    classification.ClassificationAttributes = classificationAttributes;
 
-                var result = await _classificationWriteRepository.AddAsync(classification);
-                if (!result)
-                {
-                    return false;
-                }
-
-                foreach (var item in classificationDto.ClassificationAttribute)
-                {
-                    Unit unit = new();
-                    unit = _unitReadRepository.GetWhere(x => x.Code == item.Code).FirstOrDefault();
-                    bool Attributeresult = await saveClassificationAttribute(classification, unit);
-                    if (!Attributeresult)
+                    var result = await _classificationWriteRepository.AddAsync(classification);
+                    if (!result)
                     {
                         return false;
                     }
+
+                    foreach (var item in classificationDto.ClassificationAttribute)
+                    {
+                        Unit unit = new();
+                        unit = _unitReadRepository.GetWhere(x => x.Code == item.Code).FirstOrDefault();
+                        bool Attributeresult = await saveClassificationAttribute(classification, unit);
+                        if (!Attributeresult)
+                        {
+                            return false;
+                        }
+                    }
+
+
+                    transaction.CommitAsync();
+
+
+                }catch (Exception ex)
+                {
+                    transaction.Rollback();
                 }
 
-
-                transaction.CommitAsync();
-
-
-            }
             return true;
 
         }

@@ -32,5 +32,7 @@ namespace Domain.Entities
         public bool Secure { get; set; }
 
         public bool Deleted { get; set; }
+
+        public ICollection<Product> Products { get; set; }
     }
 }
