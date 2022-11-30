@@ -62,6 +62,14 @@ namespace API.Controllers
             return Ok(classification);
         }
 
+        [HttpPost("/classification/category")]
+        public async Task<IActionResult> GetClassificationsByCategory([FromBody] List<CategoryDto> categoryDto)
+        {
+            List<Classification> classifications = await _classificationService.getClassificationByCategory(categoryDto);
+            return Ok(classifications);
+
+        }
+
         //[HttpGet("/classification/{id}")]
         //public async Task<IActionResult> ClassificationGetById(int id)
         //{

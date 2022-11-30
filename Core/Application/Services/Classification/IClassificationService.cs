@@ -17,5 +17,7 @@ namespace Application.Services
         Task<bool> saveClassificationAttributeValue(ClassificationAttributeValueDto classificationAttributeValueDto);
 
         Task<List<Classification>> getAll();
+
+        Task<List<Classification>> getClassificationByCategory(List<CategoryDto> categoryDtos);
     }
 }

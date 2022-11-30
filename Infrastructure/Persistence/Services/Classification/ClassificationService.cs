@@ -119,5 +119,11 @@ namespace Persistence.Services
             List<Classification> classifications = await _classificationReadRepository.GetAllWithInclude(true,x=> x.Categories).Include(y=> y.ClassificationAttributes).ThenInclude(z=>z.Unit).ToListAsync();
             return classifications;
         }
+
+        public async Task<List<Classification>> getClassificationByCategory(List<CategoryDto> categoryDtos)
+        {
+            List<Classification> classifications = await _classificationReadRepository.GetWhereWithInclude(x => x.Categories.Any(cat => categoryDtos.Select(y=> y.Code).Contains(cat.Code)),true,y=> y.Categories).Include(y => y.ClassificationAttributes).ThenInclude(z => z.Unit).ToListAsync();
+            return classifications;
+        }
     }
 }
