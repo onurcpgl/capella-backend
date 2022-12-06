@@ -20,6 +20,7 @@ namespace Persistence.Services
         private readonly IMediaService _mediaService;
         private readonly IProductReadRepository _productReadRepository;
         private readonly ICategoryReadRepository _categoryReadRepository;
+        private readonly IClassificationAttributeReadRepository _classificationAttributeReadRepository;
         private readonly IMapper _mapper;
 
         public ProductService(IProductWriteRepository productWriteRepository, IProductReadRepository productReadRepository, IMapper mapper)
@@ -38,29 +39,48 @@ namespace Persistence.Services
             product.Active = productDto.Active;
             product.Code = Guid.NewGuid().ToString();
 
-            var category = new HashSet<Category>();
-            foreach (var item in productDto.Categories)
+            var transaction = await _productWriteRepository.DbTransactional();
+            try
             {
-                var cat = _categoryReadRepository.GetWhere(x => x.Code == item.Code).FirstOrDefault();
-                category.Add(cat);
-            }
-            product.Categories = category;
-
-
-            if (formFiles.Count > 0)
-            {
-                var medias = new HashSet<Media>();
-                foreach (var item in formFiles)
+                var category = new HashSet<Category>();
+                foreach (var item in productDto.Categories)
                 {
-                    var media = await _mediaService.storage(item, true);
-                    medias.Add(media);
+                    var cat = _categoryReadRepository.GetWhere(x => x.Code == item.Code).FirstOrDefault();
+                    category.Add(cat);
                 }
-                product.Medias = medias;
-                
-            }
+                product.Categories = category;
 
+                
+                var classificationAttributeValueList = new HashSet<ClassificationAttributeValue>();
+                ClassificationAttributeValue classificationAttributeValue = new();
+                foreach (var item in productDto.ClassificationAttributeValue)
+                {
+                    classificationAttributeValue.ClassificationAttribute = await  _classificationAttributeReadRepository.GetAllWithInclude(true, x => x.Code == item.ClassificationAttribute.Code).FirstOrDefaultAsync();
+                    classificationAttributeValue.Value = item.Value;
+                    classificationAttributeValueList.Add(classificationAttributeValue);
+                }
+
+                product.ClassificationAttributeValues = classificationAttributeValueList;
+
+
+                if (formFiles.Count > 0)
+                {
+                    var galleries = product.Galleries.ToList();
+                    foreach (var item in formFiles)
+                    {
+                        var media = await _mediaService.saveGallery(item, true);
+                        galleries.Add(media);
+                    }
+                    product.Galleries = galleries;
+                }
+
+                transaction.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+            }
             return true;
-            
 
         }
         public async Task<List<Product>> productList()

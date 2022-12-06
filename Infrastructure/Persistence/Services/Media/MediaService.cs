@@ -3,6 +3,9 @@ using Application.Services;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,10 +24,12 @@ namespace Persistence.Services
 
         private readonly IConfiguration _config;
         private readonly IMediaWriteRepository _mediaWriteRepository;
-        public MediaService(IConfiguration config, IMediaWriteRepository mediaWriteRepository)
+        private readonly IMediaFormatReadRepository _mediaFormatReadRepository;
+        public MediaService(IConfiguration config, IMediaWriteRepository mediaWriteRepository, IMediaFormatReadRepository mediaFormatReadRepository)
         {
             _config = config;
             _mediaWriteRepository = mediaWriteRepository;
+            _mediaFormatReadRepository = mediaFormatReadRepository;
         }
         public async Task<Media> storage(IFormFile formFile, bool secure)
         { 
@@ -65,6 +70,66 @@ namespace Persistence.Services
             catch (IOException exception)
             {
 
+                throw exception;
+            }
+        }
+
+        public async Task<Gallery> saveGallery(IFormFile formFile, bool secure)
+        {
+            try
+            {
+                Gallery gallery = new Gallery();
+                gallery.Code = Guid.NewGuid().ToString();
+                gallery.Name = formFile.FileName;
+
+                var mediaFormats = _mediaFormatReadRepository.GetAll().ToList();
+                var medias = new HashSet<Media>();
+                Image image = Image.Load(formFile.OpenReadStream());
+                foreach (var mediaFormat in mediaFormats)
+                {
+                    image.Mutate(x => x.Resize(mediaFormat.Height, mediaFormat.Width));
+                    
+
+                    var todayDate = DateTime.Now.ToString("yyyyMMdd");
+                    var todayTime = DateTime.Now.ToString("HHmmss");
+                    var rootPath = _config["MediaStorage:FileRootPath"];
+                    var isSecure = secure ? _config["MediaStorage:SecurePath"] : _config["MediaStorage:PublicPath"];
+                    var filePath = $"{isSecure}capella/{todayDate}/{todayTime}";
+                    var fullPath = $"{rootPath}/{filePath}";
+                    var filenamehash = new string(Enumerable.Repeat(chars, 20).Select(s => s[random.Next(s.Length)]).ToArray());
+
+                    Directory.CreateDirectory(fullPath);
+                    using (var stream = new FileStream(Path.Combine(fullPath, formFile.FileName), FileMode.Create))
+                    {
+                        await formFile.CopyToAsync(stream);
+                    }
+
+                    Media media = new();
+                    media.RealFilename = formFile.FileName;
+                    media.EncodedFilename = filenamehash;
+                    media.Extension = Path.GetExtension(formFile.FileName);
+                    media.FilePath = filePath;
+                    media.RootPath = rootPath;
+                    media.Size = formFile.Length;
+                    media.Mime = formFile.ContentType;
+                    media.Secure = secure;
+                    var absolutePath = $"{filePath}/{filenamehash}{Path.GetExtension(formFile.FileName)}";
+                    media.AbsolutePath = absolutePath;
+                    media.ServePath = absolutePath;
+                    media.Code = Guid.NewGuid().ToString();
+                    await _mediaWriteRepository.AddAsync(media);
+                    medias.Add(media);
+
+                    image.Save($"{todayTime}", new JpegEncoder
+                    {
+                        Quality = 100
+                    });
+                }
+                gallery.Medias = medias;
+                return gallery;
+            }
+            catch (IOException exception)
+            {
                 throw exception;
             }
         }

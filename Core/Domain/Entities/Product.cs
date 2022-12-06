@@ -19,6 +19,7 @@ namespace Domain.Entities
         public ICollection<Category> Categories { get; set; }
         public ICollection<ClassificationAttributeValue> ClassificationAttributeValues { get; set; }
         public ICollection<Media> Medias { get; set; }
+        public ICollection<Gallery> Galleries { get; set; }
 
     }
 }

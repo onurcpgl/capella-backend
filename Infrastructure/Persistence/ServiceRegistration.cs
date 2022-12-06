@@ -42,6 +42,7 @@ namespace Persistence
             services.AddScoped<IClassificationAttributeValueWriteRepository, ClassificationAttributeValueWriteRepository>();
             services.AddScoped<IMediaWriteRepository, MediaWriteRepository>();
             services.AddScoped<IMediaReadRepository, MediaReadRepository>();
+            services.AddScoped<IMediaFormatReadRepository, MediaFormatReadRepository>();
             services.AddScoped<IUserReadRepository, UserReadRepository>();
             services.AddScoped<IUserWriteRepository, UserWriteRepository>();    
             services.AddScoped<IAddressReadRepository, AddressReadRepository>();    
