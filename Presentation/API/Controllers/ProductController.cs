@@ -24,9 +24,9 @@ namespace API.Controllers
 
         [HttpPost("/product")]
         //[ServiceFilter(typeof(CustomAuthorizationFilter)), PermissionAttribute("product_added")]
-        public async Task<IActionResult> AddProduct([FromBody] ProductDto productDto, List<IFormFile> formFiles)
+        public async Task<IActionResult> AddProduct([FromForm] AddProductRequest addProductRequest)
         {
-            var result = await _productService.saveProduct(productDto, formFiles);
+            var result = await _productService.saveProduct(addProductRequest.ProductData, addProductRequest.Galleries);
             if (!result)
             {
                 return BadRequest();
