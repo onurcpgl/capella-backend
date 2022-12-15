@@ -23,25 +23,27 @@ namespace Persistence.Services
         private readonly IClassificationAttributeReadRepository _classificationAttributeReadRepository;
         private readonly IMapper _mapper;
 
-        public ProductService(IProductWriteRepository productWriteRepository, IProductReadRepository productReadRepository, IMapper mapper)
+        public ProductService(IProductWriteRepository productWriteRepository, IProductReadRepository productReadRepository,ICategoryReadRepository categoryReadRepository, IClassificationAttributeReadRepository classificationAttributeReadRepository,IMediaService mediaService, IMapper mapper)
         {
             _productReadRepository = productReadRepository;
             _productWriteRepository = productWriteRepository;
+            _categoryReadRepository = categoryReadRepository;
+            _classificationAttributeReadRepository = classificationAttributeReadRepository;
+            _mediaService = mediaService;
             _mapper = mapper;
         }
 
-       
+
         public async Task<bool> saveProduct(ProductDto productDto, List<IFormFile> formFiles)
         {
-            Product product = new();
-            product.Name = productDto.Name;
-            product.Description = productDto.Description;
-            product.Active = productDto.Active;
-            product.Code = Guid.NewGuid().ToString();
-
             var transaction = await _productWriteRepository.DbTransactional();
             try
             {
+                Product product = new();
+                product.Name = productDto.Name;
+                product.Description = productDto.Description;
+                product.Active = productDto.Active;
+                product.Code = Guid.NewGuid().ToString();
                 var category = new HashSet<Category>();
                 foreach (var item in productDto.Categories)
                 {
@@ -50,12 +52,12 @@ namespace Persistence.Services
                 }
                 product.Categories = category;
 
-                
+
                 var classificationAttributeValueList = new HashSet<ClassificationAttributeValue>();
                 ClassificationAttributeValue classificationAttributeValue = new();
                 foreach (var item in productDto.ClassificationAttributeValue)
                 {
-                    classificationAttributeValue.ClassificationAttribute = await  _classificationAttributeReadRepository.GetAllWithInclude(true, x => x.Code == item.ClassificationAttribute.Code).FirstOrDefaultAsync();
+                    classificationAttributeValue.ClassificationAttribute = await _classificationAttributeReadRepository.GetWhere(x => x.Code == item.ClassificationAttribute.Code).FirstOrDefaultAsync();
                     classificationAttributeValue.Value = item.Value;
                     classificationAttributeValueList.Add(classificationAttributeValue);
                 }

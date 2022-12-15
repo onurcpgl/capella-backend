@@ -7,6 +7,7 @@ using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace API.Controllers
 {
@@ -26,7 +27,8 @@ namespace API.Controllers
         //[ServiceFilter(typeof(CustomAuthorizationFilter)), PermissionAttribute("product_added")]
         public async Task<IActionResult> AddProduct([FromForm] AddProductRequest addProductRequest)
         {
-            var result = await _productService.saveProduct(addProductRequest.ProductData, addProductRequest.Galleries);
+            ProductDto productDto = JsonConvert.DeserializeObject<ProductDto>(addProductRequest.ProductData);
+            var result = await _productService.saveProduct(productDto, addProductRequest.Galleries);
             if (!result)
             {
                 return BadRequest();

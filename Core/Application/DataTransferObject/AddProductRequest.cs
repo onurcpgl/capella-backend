@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace Application.DataTransferObject
 {
-    public class AddProductRequest
-    {
-        public List<IFormFile> Galleries { get; set; }
+        public class AddProductRequest
+        {
+            public List<IFormFile> Galleries { get; set; }
 
-        public ProductDto ProductData { get; set; }
-    }
+            public string ProductData { get; set; }
+        }
 }
