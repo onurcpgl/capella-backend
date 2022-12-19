@@ -52,14 +52,19 @@ namespace Persistence.Services
                 }
                 product.Categories = category;
 
-
+                
                 var classificationAttributeValueList = new HashSet<ClassificationAttributeValue>();
-                ClassificationAttributeValue classificationAttributeValue = new();
                 foreach (var item in productDto.ClassificationAttributeValue)
                 {
-                    classificationAttributeValue.ClassificationAttribute = await _classificationAttributeReadRepository.GetWhere(x => x.Code == item.ClassificationAttribute.Code).FirstOrDefaultAsync();
-                    classificationAttributeValue.Value = item.Value;
-                    classificationAttributeValueList.Add(classificationAttributeValue);
+                    if (!Object.Equals(item.ClassificationAttribute, null))
+                    {
+                        ClassificationAttributeValue classificationAttributeValue = new();
+                        classificationAttributeValue.Code = Guid.NewGuid().ToString();
+                        classificationAttributeValue.ClassificationAttribute = await _classificationAttributeReadRepository.GetWhere(x => x.Code == item.ClassificationAttribute.AttributeCode).FirstOrDefaultAsync();
+                        classificationAttributeValue.Value = item.Value;
+                        classificationAttributeValueList.Add(classificationAttributeValue);
+                    }
+                    
                 }
 
                 product.ClassificationAttributeValues = classificationAttributeValueList;
@@ -67,7 +72,7 @@ namespace Persistence.Services
 
                 if (formFiles.Count > 0)
                 {
-                    var galleries = product.Galleries.ToList();
+                    var galleries = new HashSet<Gallery>();
                     foreach (var item in formFiles)
                     {
                         var media = await _mediaService.saveGallery(item, true);
@@ -75,6 +80,8 @@ namespace Persistence.Services
                     }
                     product.Galleries = galleries;
                 }
+
+                await _productWriteRepository.AddAsync(product);
 
                 transaction.CommitAsync();
             }

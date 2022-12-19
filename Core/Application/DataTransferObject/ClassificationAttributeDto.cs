@@ -9,5 +9,7 @@ namespace Application.DataTransferObject
     public class ClassificationAttributeDto
     {
         public string Code { get; set; }
+
+        public string AttributeCode { get; set; }
     }
 }

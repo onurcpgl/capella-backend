@@ -4,7 +4,12 @@ using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Formats.Bmp;
+using SixLabors.ImageSharp.Formats.Gif;
 using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Formats.Png;
+using SixLabors.ImageSharp.Formats.Tiff;
 using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
@@ -87,7 +92,7 @@ namespace Persistence.Services
                 Image image = Image.Load(formFile.OpenReadStream());
                 foreach (var mediaFormat in mediaFormats)
                 {
-                    image.Mutate(x => x.Resize(mediaFormat.Height, mediaFormat.Width));
+                    image.Mutate(x => x.Resize(mediaFormat.Height, mediaFormat.Width, ResizeMode.Max));
                     
 
                     var todayDate = DateTime.Now.ToString("yyyyMMdd");
@@ -99,9 +104,10 @@ namespace Persistence.Services
                     var filenamehash = new string(Enumerable.Repeat(chars, 20).Select(s => s[random.Next(s.Length)]).ToArray());
 
                     Directory.CreateDirectory(fullPath);
-                    using (var stream = new FileStream(Path.Combine(fullPath, formFile.FileName), FileMode.Create))
+                    using (var stream = new FileStream(Path.Combine(fullPath, $"{todayTime + "-" + mediaFormat.Name}" + Path.GetExtension(formFile.FileName)), FileMode.Create))
                     {
-                        await formFile.CopyToAsync(stream);
+                        var encoder = GetEncoder(formFile.FileName);
+                        await image.SaveAsync(stream,encoder);
                     }
 
                     Media media = new();
@@ -120,10 +126,6 @@ namespace Persistence.Services
                     await _mediaWriteRepository.AddAsync(media);
                     medias.Add(media);
 
-                    image.Save($"{todayTime}", new JpegEncoder
-                    {
-                        Quality = 100
-                    });
                 }
                 gallery.Medias = medias;
                 return gallery;
@@ -133,5 +135,29 @@ namespace Persistence.Services
                 throw exception;
             }
         }
+
+
+        private static IImageEncoder GetEncoder(string fileName)
+        {
+            var extension = Path.GetExtension(fileName).ToLowerInvariant();
+            switch (extension)
+            {
+                case ".bmp":
+                    return new BmpEncoder();
+                case ".gif":
+                    return new GifEncoder();
+                case ".jpg":
+                case ".jpeg":
+                    return new JpegEncoder { Quality = 100};
+                case ".png":
+                    return new PngEncoder();
+                case ".tiff":
+                    return new TiffEncoder();
+                default:
+                    throw new NotSupportedException($"The specified file extension is not supported: {extension}");
+            }
+        }
     }
+
+
 }
