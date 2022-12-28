@@ -84,30 +84,45 @@ namespace Persistence.Services
             try
             {
                 Gallery gallery = new Gallery();
+                var todayDate = DateTime.Now.ToString("yyyyMMdd");
+                var todayTime = DateTime.Now.ToString("HHmmss");
+                var isSecure = secure ? _config["MediaStorage:SecurePath"] : _config["MediaStorage:PublicPath"];
+                var rootPath = _config["MediaStorage:FileRootPath"];
+                var filePath = $"{isSecure}capella/{todayDate}/{todayTime}";
+                var fullPath = $"{rootPath}/{filePath}";
+                Directory.CreateDirectory(fullPath);
                 gallery.Code = Guid.NewGuid().ToString();
                 gallery.Name = formFile.FileName;
 
                 var mediaFormats = _mediaFormatReadRepository.GetAll().ToList();
                 var medias = new HashSet<Media>();
-                Image image = Image.Load(formFile.OpenReadStream());
                 foreach (var mediaFormat in mediaFormats)
                 {
-                    image.Mutate(x => x.Resize(mediaFormat.Height, mediaFormat.Width, ResizeMode.Max));
                     
-
-                    var todayDate = DateTime.Now.ToString("yyyyMMdd");
-                    var todayTime = DateTime.Now.ToString("HHmmss");
-                    var rootPath = _config["MediaStorage:FileRootPath"];
-                    var isSecure = secure ? _config["MediaStorage:SecurePath"] : _config["MediaStorage:PublicPath"];
-                    var filePath = $"{isSecure}capella/{todayDate}/{todayTime}";
-                    var fullPath = $"{rootPath}/{filePath}";
                     var filenamehash = new string(Enumerable.Repeat(chars, 20).Select(s => s[random.Next(s.Length)]).ToArray());
-
-                    Directory.CreateDirectory(fullPath);
-                    using (var stream = new FileStream(Path.Combine(fullPath, $"{todayTime + "-" + mediaFormat.Name}" + Path.GetExtension(formFile.FileName)), FileMode.Create))
+                   
+                    using (var stream = new MemoryStream())
                     {
-                        var encoder = GetEncoder(formFile.FileName);
-                        await image.SaveAsync(stream,encoder);
+                        await formFile.CopyToAsync(stream);
+                        stream.Position = 0;
+                        string fileName = Path.Combine(fullPath, filenamehash +"-"+mediaFormat.Name+Path.GetExtension(formFile.FileName));
+                        using (var image = Image.Load(stream))
+                        {
+                            var options = new ResizeOptions
+                            {
+                                Size = new Size(mediaFormat.Height, mediaFormat.Width),
+                                Mode = ResizeMode.Max
+                            };
+
+                            image.Mutate(x => x.Resize(options));
+
+                            using (var output = File.OpenWrite(fileName))
+                            {
+                                image.Save(output, GetEncoder(fileName));
+                            }
+                        }
+
+
                     }
 
                     Media media = new();
@@ -148,7 +163,7 @@ namespace Persistence.Services
                     return new GifEncoder();
                 case ".jpg":
                 case ".jpeg":
-                    return new JpegEncoder { Quality = 100};
+                    return new JpegEncoder();
                 case ".png":
                     return new PngEncoder();
                 case ".tiff":
