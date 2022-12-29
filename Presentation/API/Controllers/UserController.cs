@@ -37,5 +37,12 @@ namespace API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("/users/{username}")]
+        public async Task<ActionResult> GetUserByUsername([FromRoute] string username)
+        {
+            var result = await _userService.getUserByUsername(username);
+            return Ok(result);
+        }
+
     }
 }

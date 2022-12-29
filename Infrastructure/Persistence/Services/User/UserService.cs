@@ -18,12 +18,14 @@ namespace Persistence.Services
         private readonly IUserReadRepository _userReadRepository;
         private readonly IUserWriteRepository _userWriteRepository;
         private readonly IRoleReadRepository _roleReadRepository;
+        private readonly IMapper _mapper;
 
-        public UserService(IUserReadRepository userReadRepository, IUserWriteRepository userWriteRepository, IRoleReadRepository roleReadRepository)
+        public UserService(IUserReadRepository userReadRepository, IUserWriteRepository userWriteRepository, IRoleReadRepository roleReadRepository, IMapper mapper)
         {
             _userReadRepository = userReadRepository;
             _userWriteRepository = userWriteRepository;
             _roleReadRepository = roleReadRepository;
+            _mapper = mapper;
         }
 
         public async Task<User> loadByUser(LoginDto loginDto)
@@ -56,6 +58,13 @@ namespace Persistence.Services
             List<User> users = await _userReadRepository.GetAll().ToListAsync();
             return users;
         }
-       
+
+        public async Task<UserDto> getUserByUsername(string username)
+        {
+            var user = await _userReadRepository.GetWhere(x => x.Username == username).Include(x=>x.Roles).ThenInclude(x=> x.Permissions).FirstOrDefaultAsync();
+            var userDto = _mapper.Map<UserDto>(user);
+            return userDto;
+        }
+
     }
 }

@@ -19,7 +19,6 @@ namespace Application.Mapping
 
             #endregion
 
-
             #region Category Mapper
 
             CreateMap<Category, CategoryDto>().ReverseMap();
@@ -41,11 +40,17 @@ namespace Application.Mapping
             #endregion
 
             #region User Mapper
-
-            CreateMap<User, UserDto>().ReverseMap();
-
+            CreateMap<User, UserDto>()
+            .ForMember(dest => dest.Permissions, opt => opt.MapFrom(src => src.Roles.SelectMany(r => r.Permissions)));
             #endregion
 
+            #region Role Mapper
+            CreateMap<Role, RoleDto>();
+            #endregion
+
+            #region Permission Mapper
+            CreateMap<Permission, PermissionDto>();
+            #endregion
         }
     }
 }

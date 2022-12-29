@@ -15,6 +15,11 @@ namespace Application.DataTransferObject
         public string? Password { get; set; }
         public DateTime? BirthDate { get; set; }
         public string? Email { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsDeleted { get; set; }
+        public ISet<Address> Addresses { get; set; }
+        public ISet<RoleDto> Roles { get; set; }
+        public ISet<PermissionDto> Permissions { get; set; }
       
     }
 }

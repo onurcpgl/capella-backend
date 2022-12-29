@@ -13,5 +13,7 @@ namespace Application.Services
         Task<bool> save(UserDto userDto);
         Task<List<User>> userList();
         Task<User> loadByUser(LoginDto loginDto);
+
+        Task<UserDto> getUserByUsername(string username);
     }
 }
