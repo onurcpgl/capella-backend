@@ -45,11 +45,27 @@ namespace Application.Mapping
             #endregion
 
             #region Role Mapper
-            CreateMap<Role, RoleDto>();
+            CreateMap<Role, RoleDto>().ReverseMap();
             #endregion
 
             #region Permission Mapper
-            CreateMap<Permission, PermissionDto>();
+            CreateMap<Permission, PermissionDto>().ReverseMap();
+            #endregion
+
+            #region Media Mapper
+            CreateMap<Media, MediaDto>().ReverseMap();
+            #endregion
+
+            #region Gallery Mapper
+            CreateMap<Gallery, GalleryDto>().ReverseMap();
+            #endregion
+
+            #region ClassificationAttributeValue Mapper
+            CreateMap<ClassificationAttributeValue, ClassificationAttributeValueDto>().ReverseMap();
+            #endregion
+
+            #region ClassificationAttribute Mapper
+            CreateMap<ClassificationAttribute, ClassificationAttributeDto>().ReverseMap();
             #endregion
         }
     }

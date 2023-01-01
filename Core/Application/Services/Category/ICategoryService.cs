@@ -14,5 +14,6 @@ namespace Application.Services
         Task<List<CategoryListDto>> categoryList();
         Task<Category> getCategoryById(int id);
         Task<bool> changeLocationCategory(CategoryReorderDto categoryReorderDto);
+        Task<CategoryDto> GetCategoryByCode(string code);
     }
 }

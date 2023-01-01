@@ -164,5 +164,12 @@ namespace Persistence.Services
             return true;
 
         }
+
+        public async Task<CategoryDto> GetCategoryByCode(string code)
+        {
+            var category = await _categoryReadRepository.GetWhereWithInclude(x => x.Code == code, true, x => x.ParentCategory).FirstOrDefaultAsync();
+            var categoryDto = _mapper.Map<CategoryDto>(category);
+            return categoryDto;
+        }
     }
 }

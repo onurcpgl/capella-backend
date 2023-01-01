@@ -46,10 +46,16 @@ namespace API.Controllers
             return Ok(products);
         }
 
-        [HttpGet("{productId}")]
-        public async Task<IActionResult> GetProductById(int productId)
+        [HttpGet("{code}")]
+        public async Task<IActionResult> GetProductByCode(string code)
         {
-            var product = await _productService.getProductById(productId);
+            var product = await _productService.GetProductByCode(code);
+
+            if(product is null)
+            {
+                return BadRequest();
+            }
+
             return Ok(product);
            
         }

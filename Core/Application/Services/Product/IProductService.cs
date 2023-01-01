@@ -13,6 +13,6 @@ namespace Application.Services
     {
         Task<bool> saveProduct(ProductDto productDto, List<IFormFile> formFiles);
         Task<List<Product>> productList();
-        Task<Product> getProductById(int productId);
+        Task<ProductDto> GetProductByCode(string code);
     }
 }

@@ -35,14 +35,6 @@ namespace API.Controllers
                 return Ok(true);
             }
         }
-        
-
-        [HttpGet("/category/{id}")]
-        public async Task<IActionResult> GetCategoryById(int id)
-        {
-            var category = await _categoryService.getCategoryById(id);
-            return Ok(category);
-        }
 
         [HttpGet("/categories")]
         public async Task<IActionResult> CategoryList()
@@ -65,5 +57,17 @@ namespace API.Controllers
             }
         }
 
+        [HttpGet("/category/{code}")]
+        public async Task<IActionResult> GetCategory(string code)
+        {
+            var result = await _categoryService.GetCategoryByCode(code);
+
+            if (result is null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(result);
+        }
     }
 }

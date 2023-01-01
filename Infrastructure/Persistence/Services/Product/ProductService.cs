@@ -33,7 +33,7 @@ namespace Persistence.Services
             _mapper = mapper;
         }
 
-
+        #region SaveProduct
         public async Task<bool> saveProduct(ProductDto productDto, List<IFormFile> formFiles)
         {
             var transaction = await _productWriteRepository.DbTransactional();
@@ -54,7 +54,7 @@ namespace Persistence.Services
 
                 
                 var classificationAttributeValueList = new HashSet<ClassificationAttributeValue>();
-                foreach (var item in productDto.ClassificationAttributeValue)
+                foreach (var item in productDto.ClassificationAttributeValues)
                 {
                     if (!Object.Equals(item.ClassificationAttribute, null))
                     {
@@ -92,15 +92,22 @@ namespace Persistence.Services
             return true;
 
         }
+        #endregion
+        
         public async Task<List<Product>> productList()
         {
             List<Product> products = await _productReadRepository.GetAll().ToListAsync();
             return products;
         }
-        public async Task<Product> getProductById(int productId)
+
+        public async Task<ProductDto> GetProductByCode(string code)
         {
-            var product = await _productReadRepository.GetByIdAsync(productId);
-            return product;
+            var product = await _productReadRepository.GetWhereWithInclude(x=>x.Code==code,true,x=>x.Categories).Include(x=>x.ClassificationAttributeValues).ThenInclude(x=>x.ClassificationAttribute).Include(x=>x.Galleries).ThenInclude(x=>x.Medias).FirstOrDefaultAsync();
+
+
+            var productDto = _mapper.Map<ProductDto>(product);
+
+            return productDto;
 
         }
 
