@@ -66,7 +66,7 @@ namespace Persistence.Services
                         return false;
                     }
 
-                    foreach (var item in classificationDto.ClassificationAttribute)
+                    foreach (var item in classificationDto.ClassificationAttributes)
                     {
                         Unit unit = new();
                         unit = _unitReadRepository.GetWhere(x => x.Code == item.Code).FirstOrDefault();

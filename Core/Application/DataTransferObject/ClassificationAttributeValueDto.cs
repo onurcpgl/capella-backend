@@ -11,5 +11,6 @@ namespace Application.DataTransferObject
         public string Value { get; set; }
         public string ProductCode  { get; set; }
         public ClassificationAttributeDto ClassificationAttribute { get; set; }
+        public ClassificationDto Classification { get; set; }
     }
 }

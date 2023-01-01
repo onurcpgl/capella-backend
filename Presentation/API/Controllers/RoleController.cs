@@ -37,5 +37,12 @@ namespace API.Controllers
             return Ok(role);
 
         }
+
+        [HttpGet("/roles")]
+        public async Task<IActionResult> GetAllRoles()
+        {
+            var result = await _roleService.getAll();
+            return Ok(result);
+        }
     }
 }

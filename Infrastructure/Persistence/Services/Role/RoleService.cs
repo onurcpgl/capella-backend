@@ -24,6 +24,12 @@ namespace Persistence.Services
             _permissionReadRepository = permissionReadRepository;
         }
 
+        public async Task<List<Role>> getAll()
+        {
+            List<Role> roles = await _roleReadRepository.GetAll().Include(x => x.Permissions).ToListAsync();
+            return roles;
+        }
+
         public async Task<Role> getRoleById(int roleId)
         {
             var role = await _roleReadRepository.GetWhereWithInclude(x=> x.Id == roleId,true, x => x.Permissions).FirstOrDefaultAsync();

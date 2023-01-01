@@ -13,5 +13,7 @@ namespace Application.Services
         Task<bool> save(RoleDto roleDto);
 
         Task<Role> getRoleById(int roleId);
+
+        Task<List<Role>> getAll();
     }
 }

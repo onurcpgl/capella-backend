@@ -102,7 +102,17 @@ namespace Persistence.Services
 
         public async Task<ProductDto> GetProductByCode(string code)
         {
-            var product = await _productReadRepository.GetWhereWithInclude(x=>x.Code==code,true,x=>x.Categories).Include(x=>x.ClassificationAttributeValues).ThenInclude(x=>x.ClassificationAttribute).Include(x=>x.Galleries).ThenInclude(x=>x.Medias).FirstOrDefaultAsync();
+            var product = await _productReadRepository.GetWhere(x => x.Code == code)
+                .Include(x=> x.Categories)
+                .ThenInclude(x=> x.Classifications)
+                .ThenInclude(x=> x.ClassificationAttributes)
+                .ThenInclude(x=> x.Unit)
+                .Include(x=>x.ClassificationAttributeValues)
+                .ThenInclude(x=>x.ClassificationAttribute)
+                .ThenInclude(x=> x.Classifications)
+                .Include(x=>x.Galleries)
+                .ThenInclude(x=>x.Medias)
+                .FirstOrDefaultAsync();
 
 
             var productDto = _mapper.Map<ProductDto>(product);

@@ -11,5 +11,7 @@ namespace Application.DataTransferObject
         public string Code { get; set; }
 
         public string AttributeCode { get; set; }
+
+        public UnitDto Unit { get; set; }
     }
 }
