@@ -12,12 +12,8 @@ namespace Application.Services
     {
         Task<bool> saveClassification(ClassificationDto classificationDto);
 
-        Task<bool> saveClassificationAttribute(Classification classification, Domain.Entities.Unit unit);
-
-        Task<bool> saveClassificationAttributeValue(ClassificationAttributeValueDto classificationAttributeValueDto);
-
         Task<List<Classification>> getAll();
 
-        Task<List<Classification>> getClassificationByCategory(List<CategoryDto> categoryDtos);
+       
     }
 }

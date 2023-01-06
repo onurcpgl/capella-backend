@@ -15,8 +15,8 @@ namespace Application.DataTransferObject
         public DateTime? Enddate { get; set; }
         public string? Description { get; set; }
         public ICollection<CategoryDto>? Categories { get; set; }
-        public ICollection<ClassificationDto>? Classifications { get; set; }
         public ICollection<ClassificationAttributeValueDto>? ClassificationAttributeValues { get; set; }
+        public ICollection<VariantItemDto>? VariantItems { get; set; }
         public ICollection<GalleryDto>? Galleries { get; set; }
     }
 }

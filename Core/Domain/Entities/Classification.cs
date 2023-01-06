@@ -13,8 +13,7 @@ namespace Domain.Entities
         public string Code { get; set; }
         public string Name { get; set; }
         public DataType DataType { get; set; }
-        public ICollection<Category>? Categories { get; set; }
-        public ICollection<ClassificationAttribute> ClassificationAttributes { get; set; }
+        public ICollection<Options> Options { get; set; }   
 
     }
 }

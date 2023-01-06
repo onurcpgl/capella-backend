@@ -22,21 +22,6 @@ namespace Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("CategoryClassification", b =>
-                {
-                    b.Property<int>("CategoriesId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ClassificationsId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("CategoriesId", "ClassificationsId");
-
-                    b.HasIndex("ClassificationsId");
-
-                    b.ToTable("CategoriesClassifications", (string)null);
-                });
-
             modelBuilder.Entity("CategoryProduct", b =>
                 {
                     b.Property<int>("CategoriesId")
@@ -52,6 +37,21 @@ namespace Persistence.Migrations
                     b.ToTable("ProductsCategories", (string)null);
                 });
 
+            modelBuilder.Entity("ClassificationAttributeValueOptions", b =>
+                {
+                    b.Property<int>("ClassificationAttributeValuesId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("OptionsId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ClassificationAttributeValuesId", "OptionsId");
+
+                    b.HasIndex("OptionsId");
+
+                    b.ToTable("ClassificationAttributeValuesOptions", (string)null);
+                });
+
             modelBuilder.Entity("ClassificationAttributeValueProduct", b =>
                 {
                     b.Property<int>("ClassificationAttributeValuesId")
@@ -64,22 +64,22 @@ namespace Persistence.Migrations
 
                     b.HasIndex("ProductsId");
 
-                    b.ToTable("ProductClassificationAttributeValues", (string)null);
+                    b.ToTable("ProductsClassificationAttributeValues", (string)null);
                 });
 
-            modelBuilder.Entity("ClassificationClassificationAttribute", b =>
+            modelBuilder.Entity("ClassificationAttributeValueVariantItem", b =>
                 {
-                    b.Property<int>("ClassificationAttributesId")
+                    b.Property<int>("ClassificationAttributeValuesId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ClassificationsId")
+                    b.Property<int>("VariantItemsId")
                         .HasColumnType("integer");
 
-                    b.HasKey("ClassificationAttributesId", "ClassificationsId");
+                    b.HasKey("ClassificationAttributeValuesId", "VariantItemsId");
 
-                    b.HasIndex("ClassificationsId");
+                    b.HasIndex("VariantItemsId");
 
-                    b.ToTable("ClassificationClassificationAttributes", (string)null);
+                    b.ToTable("ClassificationAttributeValuesVariantItems", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Address", b =>
@@ -173,6 +173,9 @@ namespace Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("text");
@@ -186,28 +189,9 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("Classifications");
-                });
-
-            modelBuilder.Entity("Domain.Entities.ClassificationAttribute", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Code")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("UnitId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UnitId");
-
-                    b.ToTable("ClassificationAttributes");
                 });
 
             modelBuilder.Entity("Domain.Entities.ClassificationAttributeValue", b =>
@@ -218,7 +202,7 @@ namespace Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ClassificationAttributeId")
+                    b.Property<int>("ClassificationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Code")
@@ -226,12 +210,11 @@ namespace Persistence.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Value")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClassificationAttributeId");
+                    b.HasIndex("ClassificationId");
 
                     b.ToTable("ClassificationAttributeValues");
                 });
@@ -347,6 +330,32 @@ namespace Persistence.Migrations
                     b.ToTable("MediaFormats");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Options", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClassificationId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClassificationId");
+
+                    b.ToTable("Options");
+                });
+
             modelBuilder.Entity("Domain.Entities.Permission", b =>
                 {
                     b.Property<int>("Id")
@@ -404,7 +413,12 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("Startdate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int?>("VariantId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("VariantId");
 
                     b.ToTable("Products");
                 });
@@ -496,6 +510,77 @@ namespace Persistence.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Variant", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChooseType")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Variants");
+                });
+
+            modelBuilder.Entity("Domain.Entities.VariantItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("VariantItems");
+                });
+
+            modelBuilder.Entity("Domain.Entities.VariantValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("VariantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VariantId");
+
+                    b.ToTable("VariantValues");
+                });
+
             modelBuilder.Entity("GalleryProduct", b =>
                 {
                     b.Property<int>("GalleriesId")
@@ -509,6 +594,21 @@ namespace Persistence.Migrations
                     b.HasIndex("ProductsId");
 
                     b.ToTable("GalleryProduct");
+                });
+
+            modelBuilder.Entity("GalleryVariantItem", b =>
+                {
+                    b.Property<int>("GalleriesId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("VariantItemsId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("GalleriesId", "VariantItemsId");
+
+                    b.HasIndex("VariantItemsId");
+
+                    b.ToTable("GalleriesVariantItems", (string)null);
                 });
 
             modelBuilder.Entity("MediaProduct", b =>
@@ -541,6 +641,21 @@ namespace Persistence.Migrations
                     b.ToTable("RolesPermissions", (string)null);
                 });
 
+            modelBuilder.Entity("ProductVariantItem", b =>
+                {
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("VariantItemsId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ProductsId", "VariantItemsId");
+
+                    b.HasIndex("VariantItemsId");
+
+                    b.ToTable("ProductsVariantItems", (string)null);
+                });
+
             modelBuilder.Entity("RoleUser", b =>
                 {
                     b.Property<int>("RolesId")
@@ -556,19 +671,19 @@ namespace Persistence.Migrations
                     b.ToTable("UserRoles", (string)null);
                 });
 
-            modelBuilder.Entity("CategoryClassification", b =>
+            modelBuilder.Entity("VariantItemVariantValue", b =>
                 {
-                    b.HasOne("Domain.Entities.Category", null)
-                        .WithMany()
-                        .HasForeignKey("CategoriesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("VariantItemsId")
+                        .HasColumnType("integer");
 
-                    b.HasOne("Domain.Entities.Classification", null)
-                        .WithMany()
-                        .HasForeignKey("ClassificationsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("VariantValuesId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("VariantItemsId", "VariantValuesId");
+
+                    b.HasIndex("VariantValuesId");
+
+                    b.ToTable("VariantValuesVariantItems", (string)null);
                 });
 
             modelBuilder.Entity("CategoryProduct", b =>
@@ -582,6 +697,21 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Entities.Product", null)
                         .WithMany()
                         .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ClassificationAttributeValueOptions", b =>
+                {
+                    b.HasOne("Domain.Entities.ClassificationAttributeValue", null)
+                        .WithMany()
+                        .HasForeignKey("ClassificationAttributeValuesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Options", null)
+                        .WithMany()
+                        .HasForeignKey("OptionsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -601,17 +731,17 @@ namespace Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ClassificationClassificationAttribute", b =>
+            modelBuilder.Entity("ClassificationAttributeValueVariantItem", b =>
                 {
-                    b.HasOne("Domain.Entities.ClassificationAttribute", null)
+                    b.HasOne("Domain.Entities.ClassificationAttributeValue", null)
                         .WithMany()
-                        .HasForeignKey("ClassificationAttributesId")
+                        .HasForeignKey("ClassificationAttributeValuesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Classification", null)
+                    b.HasOne("Domain.Entities.VariantItem", null)
                         .WithMany()
-                        .HasForeignKey("ClassificationsId")
+                        .HasForeignKey("VariantItemsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -636,24 +766,22 @@ namespace Persistence.Migrations
                     b.Navigation("ParentCategory");
                 });
 
-            modelBuilder.Entity("Domain.Entities.ClassificationAttribute", b =>
+            modelBuilder.Entity("Domain.Entities.Classification", b =>
                 {
-                    b.HasOne("Domain.Entities.Unit", "Unit")
-                        .WithMany()
-                        .HasForeignKey("UnitId");
-
-                    b.Navigation("Unit");
+                    b.HasOne("Domain.Entities.Category", null)
+                        .WithMany("Classifications")
+                        .HasForeignKey("CategoryId");
                 });
 
             modelBuilder.Entity("Domain.Entities.ClassificationAttributeValue", b =>
                 {
-                    b.HasOne("Domain.Entities.ClassificationAttribute", "ClassificationAttribute")
+                    b.HasOne("Domain.Entities.Classification", "Classification")
                         .WithMany()
-                        .HasForeignKey("ClassificationAttributeId")
+                        .HasForeignKey("ClassificationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ClassificationAttribute");
+                    b.Navigation("Classification");
                 });
 
             modelBuilder.Entity("Domain.Entities.Media", b =>
@@ -661,6 +789,35 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Entities.Gallery", null)
                         .WithMany("Medias")
                         .HasForeignKey("GalleryId");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Options", b =>
+                {
+                    b.HasOne("Domain.Entities.Classification", "Classification")
+                        .WithMany("Options")
+                        .HasForeignKey("ClassificationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Classification");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Product", b =>
+                {
+                    b.HasOne("Domain.Entities.Variant", null)
+                        .WithMany("Products")
+                        .HasForeignKey("VariantId");
+                });
+
+            modelBuilder.Entity("Domain.Entities.VariantValue", b =>
+                {
+                    b.HasOne("Domain.Entities.Variant", "Variant")
+                        .WithMany("VariantValues")
+                        .HasForeignKey("VariantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Variant");
                 });
 
             modelBuilder.Entity("GalleryProduct", b =>
@@ -674,6 +831,21 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Entities.Product", null)
                         .WithMany()
                         .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("GalleryVariantItem", b =>
+                {
+                    b.HasOne("Domain.Entities.Gallery", null)
+                        .WithMany()
+                        .HasForeignKey("GalleriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.VariantItem", null)
+                        .WithMany()
+                        .HasForeignKey("VariantItemsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -708,6 +880,21 @@ namespace Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ProductVariantItem", b =>
+                {
+                    b.HasOne("Domain.Entities.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.VariantItem", null)
+                        .WithMany()
+                        .HasForeignKey("VariantItemsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("RoleUser", b =>
                 {
                     b.HasOne("Domain.Entities.Role", null)
@@ -723,9 +910,31 @@ namespace Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("VariantItemVariantValue", b =>
+                {
+                    b.HasOne("Domain.Entities.VariantItem", null)
+                        .WithMany()
+                        .HasForeignKey("VariantItemsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.VariantValue", null)
+                        .WithMany()
+                        .HasForeignKey("VariantValuesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Domain.Entities.Category", b =>
                 {
+                    b.Navigation("Classifications");
+
                     b.Navigation("SubCategories");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Classification", b =>
+                {
+                    b.Navigation("Options");
                 });
 
             modelBuilder.Entity("Domain.Entities.Gallery", b =>
@@ -736,6 +945,13 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
                     b.Navigation("Addresses");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Variant", b =>
+                {
+                    b.Navigation("Products");
+
+                    b.Navigation("VariantValues");
                 });
 #pragma warning restore 612, 618
         }

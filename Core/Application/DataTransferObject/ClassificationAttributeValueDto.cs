@@ -8,9 +8,8 @@ namespace Application.DataTransferObject
 {
     public class ClassificationAttributeValueDto
     {
-        public string Value { get; set; }
-        public string ProductCode  { get; set; }
-        public ClassificationAttributeDto ClassificationAttribute { get; set; }
-        public ClassificationDto Classification { get; set; }
+        public string? Value { get; set; }
+        public ClassificationDto? Classification { get; set; }
+        public ICollection<OptionsDto>? Options { get; set; }
     }
 }

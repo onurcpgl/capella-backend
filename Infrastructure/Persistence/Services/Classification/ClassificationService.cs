@@ -16,25 +16,25 @@ namespace Persistence.Services
     {
         private readonly IClassificationReadRepository _classificationReadRepository;
         private readonly IClassificationWriteRepository _classificationWriteRepository;
-        private readonly IClassificationAttributeReadRepository _classificationAttributeReadRepository;
-        private readonly IClassificationAttributeWriteRepository _classificationAttributeWriteRepository;
+      
         private readonly IClassificationAttributeValueWriteRepository _classificationAttributeValueWriteRepository;
         private readonly ICategoryReadRepository _categoryReadRepository;
+        private readonly IOptionsService _optionsService;
         private readonly IProductReadRepository _productReadRepository;
         private readonly IUnitReadRepository _unitReadRepository;
 
         public ClassificationService(IClassificationReadRepository classificationReadRepository, IClassificationWriteRepository classificationWriteRepository,
-            IClassificationAttributeWriteRepository classificationAttributeWriteRepository, ICategoryReadRepository categoryReadRepository,IClassificationAttributeReadRepository classificationAttributeReadRepository,
-            IUnitReadRepository unitReadRepository, IProductReadRepository productReadRepository, IClassificationAttributeValueWriteRepository classificationAttributeValueWriteRepository)
+             ICategoryReadRepository categoryReadRepository,
+            IUnitReadRepository unitReadRepository, IProductReadRepository productReadRepository, IClassificationAttributeValueWriteRepository classificationAttributeValueWriteRepository, IOptionsService optionsService)
         {
             _classificationReadRepository = classificationReadRepository;
             _classificationWriteRepository = classificationWriteRepository;
-            _classificationAttributeReadRepository = classificationAttributeReadRepository;
-            _classificationAttributeWriteRepository = classificationAttributeWriteRepository;
+   
             _classificationAttributeValueWriteRepository = classificationAttributeValueWriteRepository;
             _categoryReadRepository = categoryReadRepository;
             _productReadRepository = productReadRepository;
             _unitReadRepository = unitReadRepository;
+            _optionsService = optionsService;
         }
         public async Task<bool> saveClassification(ClassificationDto classificationDto)
         {
@@ -48,35 +48,17 @@ namespace Persistence.Services
           
                 try
                 {
-                    var category = new HashSet<Category>();
-                    foreach (var item in classificationDto.Categories)
-                    {
-                        var cat = _categoryReadRepository.GetWhere(x => x.Code == item.Code).FirstOrDefault();
-                        category.Add(cat);
-                    }
-                    classification.Categories = category;
 
-                    var classificationAttributes = new HashSet<ClassificationAttribute>();
-
-                    classification.ClassificationAttributes = classificationAttributes;
-
-                    var result = await _classificationWriteRepository.AddAsync(classification);
-                    if (!result)
-                    {
-                        return false;
-                    }
-
-                    foreach (var item in classificationDto.ClassificationAttributes)
-                    {
-                        Unit unit = new();
-                        unit = _unitReadRepository.GetWhere(x => x.Code == item.Code).FirstOrDefault();
-                        bool Attributeresult = await saveClassificationAttribute(classification, unit);
-                        if (!Attributeresult)
+                    await _classificationWriteRepository.AddAsync(classification);
+                    var options = new HashSet<Options>();
+                        foreach (var item in classificationDto.Options)
                         {
-                            return false;
+                            var option = await _optionsService.Save(item,classification.Code);
+                            options.Add(option);
+                        
                         }
-                    }
 
+                    
 
                     transaction.CommitAsync();
 
@@ -90,40 +72,14 @@ namespace Persistence.Services
 
         }
 
-        public async Task<bool> saveClassificationAttribute(Classification classification, Unit unit)
-        {
-            ClassificationAttribute classificationAttribute = new();
-            classificationAttribute.Code = Guid.NewGuid().ToString();
-            classificationAttribute.Unit = unit;
-            classificationAttribute.Classifications.Add(classification);
-            return await _classificationAttributeWriteRepository.AddAsync(classificationAttribute);
-        }
-
-        public async Task<bool> saveClassificationAttributeValue(ClassificationAttributeValueDto classificationAttributeValueDto)
-        {
-            ClassificationAttributeValue classificationAttributeValue = new();
-            var classificationAttributeCode = classificationAttributeValueDto.ClassificationAttribute.Code;
-            ClassificationAttribute classificationAttribute = new();
-            classificationAttribute = _classificationAttributeReadRepository.GetWhere(x => x.Code == classificationAttributeCode).FirstOrDefault();
-            classificationAttributeValue.ClassificationAttribute = classificationAttribute;
-            Product product = new();
-            var productCode = classificationAttributeValueDto.ProductCode;
-            product = _productReadRepository.GetWhere(x => x.Code == productCode).FirstOrDefault();
-            classificationAttributeValue.Products.Add(product);
-            return await _classificationAttributeValueWriteRepository.AddAsync(classificationAttributeValue);
-        }
 
 
         public async Task<List<Classification>> getAll()
         {
-            List<Classification> classifications = await _classificationReadRepository.GetAllWithInclude(true,x=> x.Categories).Include(y=> y.ClassificationAttributes).ThenInclude(z=>z.Unit).ToListAsync();
+            List<Classification> classifications = await _classificationReadRepository.GetAllWithInclude(true,x=> x.Options).ToListAsync();
             return classifications;
         }
 
-        public async Task<List<Classification>> getClassificationByCategory(List<CategoryDto> categoryDtos)
-        {
-            List<Classification> classifications = await _classificationReadRepository.GetWhereWithInclude(x => x.Categories.Any(cat => categoryDtos.Select(y=> y.Code).Contains(cat.Code)),true,y=> y.Categories).Include(y => y.ClassificationAttributes).ThenInclude(z => z.Unit).ToListAsync();
-            return classifications;
-        }
+        
     }
 }

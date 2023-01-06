@@ -15,9 +15,7 @@ namespace Application.Mapping
         {
             #region Product Mapper
 
-            CreateMap<Product, ProductDto>()
-                .ForMember(dest => dest.Classifications, opt => opt.MapFrom(src => src.Categories.SelectMany(c => c.Classifications)))
-                .ReverseMap();
+            CreateMap<Product, ProductDto>().ReverseMap();
             #endregion
 
             #region Category Mapper
@@ -28,11 +26,7 @@ namespace Application.Mapping
             #endregion
 
             #region Classification Mapper
-
-            CreateMap<Classification, ClassificationDto>()
-                .ForMember(dest => dest.Categories, opt => opt.Ignore()).ReverseMap();
-           
-
+            CreateMap<Classification, ClassificationDto>().ReverseMap();
             #endregion
 
             #region Unit Mapper
@@ -64,13 +58,13 @@ namespace Application.Mapping
 
             #region ClassificationAttributeValue Mapper
             CreateMap<ClassificationAttributeValue, ClassificationAttributeValueDto>()
-                 .ForMember(dto => dto.Classification, opt => opt.MapFrom(src => src.ClassificationAttribute.Classifications))
                 .ReverseMap();
             #endregion
 
-            #region ClassificationAttribute Mapper
-            CreateMap<ClassificationAttribute, ClassificationAttributeDto>().ReverseMap();
+            #region Options Mapper
+            CreateMap<Options, OptionsDto>().ReverseMap();
             #endregion
+
         }
     }
 }

@@ -9,14 +9,11 @@ namespace Domain.Entities
 {
     public class ClassificationAttributeValue : BaseEntity
     {
-
-        public ClassificationAttributeValue()
-        {
-            Products = new List<Product>();
-        }
         public string Code { get; set; }
-        public string Value { get; set; }
-        public ClassificationAttribute ClassificationAttribute { get; set; }
+        public string? Value { get; set; }
+        public Classification Classification { get; set; }
+        public ICollection<Options> Options { get; set; }
+        public ICollection<VariantItem> VariantItems { get; set; }
         public ICollection<Product> Products { get; set; }
     }
 }

@@ -25,10 +25,12 @@ namespace API.Controllers
 
         [HttpPost("/product")]
         //[ServiceFilter(typeof(CustomAuthorizationFilter)), PermissionAttribute("product_added")]
-        public async Task<IActionResult> AddProduct([FromForm] AddProductRequest addProductRequest)
+        //public async Task<IActionResult> AddProduct([FromForm] AddProductRequest addProductRequest)
+        public async Task<IActionResult> AddProduct([FromBody] ProductDto productDto)
         {
-            ProductDto productDto = JsonConvert.DeserializeObject<ProductDto>(addProductRequest.ProductData);
-            var result = await _productService.saveProduct(productDto, addProductRequest.Galleries);
+            //ProductDto productDto = JsonConvert.DeserializeObject<ProductDto>(addProductRequest.ProductData);
+            //var result = await _productService.saveProduct(productDto, addProductRequest.Galleries);
+            var result = await _productService.saveProduct(productDto);
             if (!result)
             {
                 return BadRequest();

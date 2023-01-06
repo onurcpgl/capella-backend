@@ -38,23 +38,6 @@ namespace API.Controllers
 
         }
 
-        [HttpPost("/classification-attribute-value")]
-        public async Task<IActionResult> AddClassificationAttributeValue([FromBody] ClassificationAttributeValueDto classificationAttributeValueDto)
-        {
-
-            var result = await _classificationService.saveClassificationAttributeValue(classificationAttributeValueDto);
-
-            if (!result)
-            {
-                return BadRequest();
-            }
-            else
-            {
-                return Ok(true);
-            }
-
-        }
-
         [HttpGet("/classifications")]
         public async Task<IActionResult> ClassificationList()
         {
@@ -62,20 +45,6 @@ namespace API.Controllers
             return Ok(classification);
         }
 
-        [HttpPost("/classification/category")]
-        public async Task<IActionResult> GetClassificationsByCategory([FromBody] List<CategoryDto> categoryDto)
-        {
-            List<Classification> classifications = await _classificationService.getClassificationByCategory(categoryDto);
-            return Ok(classifications);
-
-        }
-
-        //[HttpGet("/classification/{id}")]
-        //public async Task<IActionResult> ClassificationGetById(int id)
-        //{
-        //    var classificationGetId = await _classificationReadRepository.GetByIdAsync(id);
-        //    return Ok(classificationGetId);
-        //}
 
     }
 }

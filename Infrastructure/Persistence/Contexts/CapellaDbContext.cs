@@ -18,7 +18,6 @@ namespace Persistence.Contexts
         public DbSet<Category> Categories { get; set; }
         public DbSet<Classification> Classifications { get; set; }
         public DbSet<Unit> Units { get; set; }
-        public DbSet<ClassificationAttribute> ClassificationAttributes { get; set; }
         public DbSet<ClassificationAttributeValue> ClassificationAttributeValues { get; set; }
         public DbSet<Media> Medias { get; set; }
         public DbSet<User> Users { get; set; }
@@ -26,6 +25,10 @@ namespace Persistence.Contexts
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<MediaFormat> MediaFormats { get; set; }
+        public DbSet<Options> Options { get; set; }
+        public DbSet<Variant> Variants { get; set; }
+        public DbSet<VariantValue> VariantValues { get; set; }
+        public DbSet<VariantItem> VariantItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,6 +39,35 @@ namespace Persistence.Contexts
                 .HasForeignKey(category => category.ParentCategoryId);
 
             modelBuilder
+               .Entity<Product>()
+               .HasMany(product => product.VariantItems)
+               .WithMany(variantItem => variantItem.Products)
+               .UsingEntity(j => j.ToTable("ProductsVariantItems"));
+
+            modelBuilder
+             .Entity<Variant>()
+             .HasMany(variant => variant.VariantValues)
+             .WithOne(variantValue => variantValue.Variant);
+
+            modelBuilder
+             .Entity<VariantItem>()
+             .HasMany(variantItem => variantItem.VariantValues)
+             .WithMany(variantValue => variantValue.VariantItems)
+             .UsingEntity(j => j.ToTable("VariantValuesVariantItems"));
+
+            modelBuilder
+            .Entity<VariantItem>()
+            .HasMany(variantItem => variantItem.ClassificationAttributeValues)
+            .WithMany(classificationAttributeValue => classificationAttributeValue.VariantItems)
+            .UsingEntity(j => j.ToTable("ClassificationAttributeValuesVariantItems"));
+
+            modelBuilder
+               .Entity<VariantItem>()
+               .HasMany(variantItem => variantItem.Galleries)
+               .WithMany(galllery => galllery.VariantItems)
+               .UsingEntity(j => j.ToTable("GalleriesVariantItems"));
+
+            modelBuilder
                 .Entity<Product>()
                 .HasMany(product=> product.Categories)
                 .WithMany(category => category.Products)
@@ -43,10 +75,20 @@ namespace Persistence.Contexts
 
             modelBuilder
                 .Entity<Classification>()
-                .HasMany(p => p.Categories)
-                .WithMany(p => p.Classifications)
-                .UsingEntity(j => j.ToTable("CategoriesClassifications"));
+                .HasMany(c => c.Options)
+                .WithOne(o => o.Classification);
 
+            modelBuilder
+                .Entity<Product>()
+                .HasMany(c => c.ClassificationAttributeValues)
+                .WithMany(p => p.Products)
+                .UsingEntity(j => j.ToTable("ProductsClassificationAttributeValues"));
+
+            modelBuilder
+                .Entity<ClassificationAttributeValue>()
+                .HasMany(attributeValue => attributeValue.Options)
+                .WithMany(option => option.ClassificationAttributeValues)
+                .UsingEntity(j => j.ToTable("ClassificationAttributeValuesOptions"));
 
             modelBuilder
                 .Entity<Product>()
@@ -54,17 +96,7 @@ namespace Persistence.Contexts
                 .WithMany(m => m.Products)
                 .UsingEntity(j => j.ToTable("ProductsMedias"));
 
-            modelBuilder
-                .Entity<Classification>()
-                .HasMany(p => p.ClassificationAttributes)
-                .WithMany(p => p.Classifications)
-                .UsingEntity(j => j.ToTable("ClassificationClassificationAttributes"));
-
-            modelBuilder
-                .Entity<Product>()
-                .HasMany(product => product.ClassificationAttributeValues)
-                .WithMany(classificationAttributeValues => classificationAttributeValues.Products)
-                .UsingEntity(j => j.ToTable("ProductClassificationAttributeValues"));
+          
 
             modelBuilder
                 .Entity<User>()

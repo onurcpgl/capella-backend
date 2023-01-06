@@ -1,4 +1,5 @@
-﻿using Domain.Enums;
+﻿using Domain.Entities;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,9 @@ namespace Application.DataTransferObject
 {
     public class ClassificationDto
     {
+        public string Code { get; set; }
         public string? Name { get; set; }
-
         public DataType? DataType { get; set; }
-        public ICollection<CategoryDto>? Categories { get; set; }
-        public ICollection<ClassificationAttributeDto> ClassificationAttributes { get; set; }
+        public ICollection<OptionsDto>? Options { get; set; }
     }
 }

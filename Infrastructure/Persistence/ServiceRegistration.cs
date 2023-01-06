@@ -4,6 +4,7 @@ using Application.Services;
 using Application.Services.Address;
 using Application.Services.Permission;
 using Application.Services.Token;
+using Application.Services.Variant;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence.Contexts;
@@ -35,9 +36,7 @@ namespace Persistence
             services.AddScoped<IClassificationWriteRepository, ClassificationWriteRepository>();
             services.AddScoped<IClassificationReadRepository, ClassificationReadRepository>();
             services.AddScoped<IUnitReadRepository, UnitReadRepository>();
-            services.AddScoped<IUnitWriteRepository, UnitWriteRepository>();
-            services.AddScoped<IClassificationAttributeReadRepository, ClassificationAttributeReadRepository>();
-            services.AddScoped<IClassificationAttributeWriteRepository, ClassificationAttributeWriteRepository>();  
+            services.AddScoped<IUnitWriteRepository, UnitWriteRepository>();  
             services.AddScoped<IClassificationAttributeValueReadRepository, ClassificationAttributeValueReadRepository>();  
             services.AddScoped<IClassificationAttributeValueWriteRepository, ClassificationAttributeValueWriteRepository>();
             services.AddScoped<IMediaWriteRepository, MediaWriteRepository>();
@@ -51,6 +50,14 @@ namespace Persistence
             services.AddScoped<IRoleWriteRepository, RoleWriteRepository>();    
             services.AddScoped<IPermissionReadRepository, PermissionReadRepository>();
             services.AddScoped<IPermissionWriteRepository, PermissionWriteRepository>();
+            services.AddScoped<IOptionsReadRepository, OptionsReadRepository>();
+            services.AddScoped<IOptionsWriteRepository, OptionsWriteRepository>();
+            services.AddScoped<IVariantReadRepository, VariantReadRepository>();
+            services.AddScoped<IVariantWriteRepository, VariantWriteRepository>();
+            services.AddScoped<IVariantValueReadRepository, VariantValueReadRepository>();
+            services.AddScoped<IVariantValueWriteRepository, VariantValueWriteRepository>();
+            services.AddScoped<IVariantItemReadRepository, VariantItemReadRepository>();
+            services.AddScoped<IVariantItemWriteRepository, VariantItemWriteRepository>();
             #endregion
 
             #region Service Registration
@@ -63,6 +70,11 @@ namespace Persistence
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IAddressService, AddressService>();
             services.AddScoped<IPermissionService, PermissionService>();
+            services.AddScoped<IClassificationAttributeValueService, ClassificationAttributeValueService>();
+            services.AddScoped<IOptionsService, OptionsService>();
+            services.AddScoped<IVariantService, VariantService>();
+            services.AddScoped<IVariantItemService, VariantItemService>();
+            services.AddScoped<IVariantValueService, VariantValueService>();
             services.AddScoped<ITokenService, TokenService>();
             #endregion
 

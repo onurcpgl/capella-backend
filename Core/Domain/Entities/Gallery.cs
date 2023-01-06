@@ -16,5 +16,7 @@ namespace Domain.Entities
         public ICollection<Media> Medias { get; set; }
 
         public ICollection<Product> Products { get; set; }
+
+        public ICollection<VariantItem> VariantItems { get; set; }
     }
 }
