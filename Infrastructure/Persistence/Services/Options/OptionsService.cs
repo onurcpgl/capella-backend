@@ -32,13 +32,10 @@ namespace Persistence.Services
 
             var classification = _classificationReadRepository.GetWhere(x => x.Code == Code).FirstOrDefault();
             options.Classification = classification;
+             
+            var model = await _optionsWriteRepository.AddAsyncWithModel(options);
 
-            var result = await _optionsWriteRepository.AddAsync(options);
-            if (!result)
-            {
-                return null;
-            }
-            return options;
+            return model;
         }
     }
 }
