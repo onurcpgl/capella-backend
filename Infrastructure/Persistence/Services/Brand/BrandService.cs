@@ -48,7 +48,7 @@ namespace Persistence.Services
 
         public async Task Update(BrandDto brandDto)
         {
-            var brand = _brandReadRepository.GetWhere(x => x.Code == brandDto.Code).FirstOrDefault();
+            var brand = _mapper.Map<Brand>(brandDto);
             await _brandWriteRepository.UpdateAsync(brand, brandDto.Id);
         }
     }
