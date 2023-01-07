@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class VariantItem: BaseEntity
+    public class VariantItem: CodeBaseEntity
     {
-        public string Code { get; set; }
         public string Name { get; set; }
 
         public ICollection<ClassificationAttributeValue> ClassificationAttributeValues { get; set; }

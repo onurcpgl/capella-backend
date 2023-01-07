@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Variant: BaseEntity
+    public class Variant: CodeBaseEntity
     {
-        public string Code { get; set; }
         public string Name { get; set; }
         public DataType ChooseType { get; set; }
         public ICollection<VariantValue> VariantValues { get; set; }

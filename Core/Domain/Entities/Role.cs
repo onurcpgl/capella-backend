@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Role : BaseEntity
+    public class Role : CodeBaseEntity
     {
-        public string Code { get; set; }
         public string Name { get; set; }    
         public bool IsActive { get; set; }  
         public ICollection<User> Users { get; set; }

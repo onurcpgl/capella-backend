@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Permission : BaseEntity
+    public class Permission : CodeBaseEntity
     {
-        public string Code { get; set; }
         public string Name { get; set; }
         public string Description { get; set; } 
         public ICollection<Role> Roles { get; set; }

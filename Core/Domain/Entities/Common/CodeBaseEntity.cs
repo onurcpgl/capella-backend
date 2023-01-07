@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities.Common
 {
-    public abstract class BaseEntity
+    public abstract class CodeBaseEntity: BaseEntity
     {
-        public int Id { get; set; }
+        public string Code { get; set; }
     }
 }

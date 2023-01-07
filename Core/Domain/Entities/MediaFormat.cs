@@ -7,11 +7,8 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class MediaFormat: BaseEntity
+    public class MediaFormat: CodeBaseEntity
     {
-
-        public string Code { get; set; }
-
         public string Name { get; set; }
 
         public int Height { get; set; }

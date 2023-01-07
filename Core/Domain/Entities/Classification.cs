@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Classification: BaseEntity
+    public class Classification: CodeBaseEntity
     {
-        public string Code { get; set; }
         public string Name { get; set; }
         public DataType DataType { get; set; }
         public ICollection<Options> Options { get; set; }   

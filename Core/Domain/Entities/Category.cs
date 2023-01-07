@@ -7,14 +7,12 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Category: BaseEntity
+    public class Category: CodeBaseEntity
     {
         public Category()
         {
             SubCategories=new List<Category>();
         }
-        public string Code { get; set; }
-
         public string Name { get; set; }
 
         public string Description { get; set; }

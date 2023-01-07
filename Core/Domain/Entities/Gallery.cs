@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Gallery: BaseEntity
+    public class Gallery: CodeBaseEntity
     {
         public string Name { get; set; }
-
-        public string Code { get; set; }
 
         public ICollection<Media> Medias { get; set; }
 

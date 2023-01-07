@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Options: BaseEntity
+    public class Options: CodeBaseEntity
     {
-
-        public string Code { get; set; }
         public string Name { get; set; }
         public Classification Classification { get; set; }
         public ICollection<ClassificationAttributeValue> ClassificationAttributeValues { get; set; }

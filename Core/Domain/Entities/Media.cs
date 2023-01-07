@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Media: BaseEntity
+    public class Media: CodeBaseEntity
     {
-        public string Code { get; set; }
-
         public string RealFilename { get; set; }
 
         public string EncodedFilename { get; set; }

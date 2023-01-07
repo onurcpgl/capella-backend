@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class VariantValue: BaseEntity
+    public class VariantValue: CodeBaseEntity
     {
-        public string Code { get; set; }
         public string Name { get; set; }
         public Variant Variant { get; set; }
         public ICollection<VariantItem> VariantItems { get; set; }

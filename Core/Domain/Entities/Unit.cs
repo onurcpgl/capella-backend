@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Unit : BaseEntity
+    public class Unit : CodeBaseEntity
     {
-        public string Code { get; set; }
         public string Name { get; set; }
 
     }

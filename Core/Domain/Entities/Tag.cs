@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Tag: BaseEntity
+    public class Tag: CodeBaseEntity
     {
-        public string Code { get; set; }
-
         public string Name { get; set; }
 
         public ICollection<Product> Products { get; set; }
