@@ -36,5 +36,35 @@ namespace API.Controllers
             var result = await _brandService.GetBrandByCode(code);
             return Ok(result);
         }
+
+        [HttpPut("/brand")]
+        public async Task<IActionResult> Update([FromBody] BrandDto brandDto)
+        {
+            var result = await _brandService.Update(brandDto);
+            if (!result)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                return Ok(true);
+            }
+
+        }
+
+        [HttpDelete("/brand/{code}")]
+        public async Task<IActionResult> Delete(string code)
+        {
+            var result = await _brandService.Delete(code);
+            if (!result)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                return Ok(true);
+            }
+
+        }
     }
 }

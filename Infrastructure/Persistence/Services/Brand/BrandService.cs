@@ -24,6 +24,13 @@ namespace Persistence.Services
             _mapper = mapper;
         }
 
+        public async Task<bool> Delete(string code)
+        {
+            var brand = _brandReadRepository.GetWhere(x => x.Code == code).FirstOrDefault();
+            var result = await _brandWriteRepository.Remove(brand);
+            return result;
+        }
+
         public async Task<BrandDto> GetBrandByCode(string code)
         {
             var brand = _brandReadRepository.GetWhere(x => x.Code == code).FirstOrDefault();
@@ -44,6 +51,14 @@ namespace Persistence.Services
                 return false;
             }
             return true;
+        }
+
+        public async Task<bool> Update(BrandDto brandDto)
+        {
+            
+           var brand = _mapper.Map<Brand>(brandDto);
+           var result = await _brandWriteRepository.UpdateMatchEntity(brand, brandDto.Id);
+           return result;
         }
     }
 }

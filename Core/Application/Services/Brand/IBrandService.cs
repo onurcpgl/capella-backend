@@ -11,5 +11,7 @@ namespace Application.Services
     {
         Task<bool> Save(BrandDto brandDto);
         Task<BrandDto> GetBrandByCode(string code);
+        Task<bool> Update(BrandDto brandDto);
+        Task<bool> Delete(string code);
     }
 }

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Persistence.Repositories
 {
-    public class WriteRepository<T> : IWriteRepository<T> where T : BaseEntity
+    public class WriteRepository<T> : IWriteRepository<T> where T:BaseEntity,ItemEntity
     {
         private readonly CapellaDbContext _context;
         public WriteRepository(CapellaDbContext context)
@@ -34,16 +34,11 @@ namespace Persistence.Repositories
             return true;
         }
 
-        public bool Remove(T model)
+        public async Task<bool> Remove(T model)
         {
             EntityEntry<T> entityEntry = Table.Remove(model);
-            return entityEntry.State == EntityState.Deleted;
-        }
+            return _context.SaveChanges() > -1;
 
-        public async Task<bool> RemoveAsync(int id)
-        {
-            T model = await Table.FirstOrDefaultAsync(data => data.Id == id);
-            return Remove(model);
         }
 
         public bool RemoveRange(List<T> datas)
@@ -64,6 +59,28 @@ namespace Persistence.Repositories
             return await _context.Database.BeginTransactionAsync();
         }
 
-        
+        public async Task<bool> UpdateMatchEntity(T newModel, int id)
+        {
+            T dbModel = await Table.FirstOrDefaultAsync(data => data.Id == id);
+
+            if (dbModel == null)
+                throw new ArgumentNullException(nameof(dbModel));
+
+            if (newModel == null)
+                throw new ArgumentNullException(nameof(newModel));
+
+            _context.Entry(dbModel).CurrentValues.SetValues(newModel);
+
+            foreach (var property in _context.Entry(dbModel).Properties)
+            {
+                if (property.CurrentValue == null) 
+                {
+                    _context.Entry(dbModel).Property(property.Metadata.Name).IsModified = false; 
+                }
+            }
+
+            return _context.SaveChanges() > -1;
+
+        }
     }
 }

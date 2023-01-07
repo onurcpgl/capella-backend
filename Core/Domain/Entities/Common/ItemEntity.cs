@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities.Common
 {
-    public abstract class BaseEntity: ItemEntity
+    public interface ItemEntity
     {
-        public int Id { get; set; }
+
     }
 }

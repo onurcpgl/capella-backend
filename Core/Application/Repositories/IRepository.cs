@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.Repositories
 {
-    public interface IRepository<T> where T : BaseEntity
+    public interface IRepository<T> where T :BaseEntity, ItemEntity
     {
         DbSet<T> Table { get; }
     }

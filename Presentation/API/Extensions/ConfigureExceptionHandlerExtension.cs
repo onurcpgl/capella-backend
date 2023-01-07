@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using API.Utilities.ResponseData;
+using Microsoft.AspNetCore.Diagnostics;
 using System.Net;
 using System.Net.Mime;
 using System.Text.Json;
@@ -21,11 +22,10 @@ namespace API.Extensions
                     {
                         logger.LogError(contextFeature.Error.Message);
 
-                        await context.Response.WriteAsync(JsonSerializer.Serialize(new
+                        await context.Response.WriteAsync(JsonSerializer.Serialize(new ServiceResponseData
                         {
-                            StatusCode = context.Response.StatusCode,
-                            Message = contextFeature.Error.Message,
-                            Title = "Error"
+                           Status = ProcessStatus.ERROR,
+                           ErrorMessage = contextFeature.Error.Message
                         }));
                     }
                 });
