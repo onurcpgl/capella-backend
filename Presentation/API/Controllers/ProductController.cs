@@ -16,10 +16,12 @@ namespace API.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly ILogger<ProductController> _logger;
        
-        public ProductController(IProductService productService)
+        public ProductController(IProductService productService, ILogger<ProductController> logger)
         {
             _productService = productService;
+            _logger = logger;
         }
 
         [HttpPost("/product")]
@@ -43,6 +45,7 @@ namespace API.Controllers
         [HttpGet("/products")]
         public async Task<IActionResult> GetProducts()
         {
+            _logger.LogInformation("Ürünlerin tamamını listeleme isteği geldi.");
             List<Product> products = await _productService.GetAllProducts();
             return Ok(products);
         }
