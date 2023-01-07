@@ -29,6 +29,7 @@ namespace Persistence.Contexts
         public DbSet<Variant> Variants { get; set; }
         public DbSet<VariantValue> VariantValues { get; set; }
         public DbSet<VariantItem> VariantItems { get; set; }
+        public DbSet<Brand> Brands { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -37,6 +38,17 @@ namespace Persistence.Contexts
                 .HasOne(category => category.ParentCategory)
                 .WithMany(category => category.SubCategories)
                 .HasForeignKey(category => category.ParentCategoryId);
+
+            modelBuilder
+               .Entity<Product>()
+               .HasOne(product => product.Brand)
+               .WithMany(brand => brand.Products);
+
+            modelBuilder
+              .Entity<Product>()
+              .HasMany(product => product.Tags)
+              .WithMany(tag => tag.Products)
+              .UsingEntity(j => j.ToTable("ProductsTags"));
 
             modelBuilder
                .Entity<Product>()

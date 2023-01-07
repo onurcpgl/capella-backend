@@ -20,18 +20,33 @@ namespace Persistence.Services
         private readonly IMediaService _mediaService;
         private readonly IProductReadRepository _productReadRepository;
         private readonly ICategoryReadRepository _categoryReadRepository;
+        private readonly IBrandReadRepository _brandReadRepository;
+        private readonly ITagReadRepository _tagReadRepository;
         private readonly IClassificationAttributeValueService _classificationAttributeValueService;
+        private readonly ITagService _tagService;
         private readonly IVariantItemService _variantItemService;
         private readonly IMapper _mapper;
 
-        public ProductService(IProductWriteRepository productWriteRepository, IProductReadRepository productReadRepository,ICategoryReadRepository categoryReadRepository,IMediaService mediaService, IClassificationAttributeValueService classificationAttributeValueService, IVariantItemService variantItemService, IMapper mapper)
+        public ProductService(IProductWriteRepository productWriteRepository, 
+            IProductReadRepository productReadRepository,
+            ICategoryReadRepository categoryReadRepository,
+            IMediaService mediaService,
+            IClassificationAttributeValueService classificationAttributeValueService, 
+            IVariantItemService variantItemService,
+            IBrandReadRepository brandReadRepository,
+            ITagReadRepository tagReadRepository,
+            ITagService tagService,
+            IMapper mapper)
         {
             _productReadRepository = productReadRepository;
             _productWriteRepository = productWriteRepository;
             _categoryReadRepository = categoryReadRepository;
             _classificationAttributeValueService = classificationAttributeValueService;
+            _tagService = tagService;
             _mediaService = mediaService;
             _variantItemService = variantItemService;
+            _tagReadRepository = tagReadRepository;
+            _brandReadRepository = brandReadRepository;
             _mapper = mapper;
         }
 
@@ -75,6 +90,18 @@ namespace Persistence.Services
                 }
 
                 product.VariantItems = variantItems;
+
+                var brand = await _brandReadRepository.GetWhere(x => x.Code == productDto.Brand.Code).FirstOrDefaultAsync();
+                product.Brand = brand;
+
+                var tags = new HashSet<Tag>();
+                foreach (var item in productDto.Tags)
+                {
+                    var tag = await _tagReadRepository.GetWhere(x=> x.Code==item.Code).FirstOrDefaultAsync();
+                    tags.Add(tag);
+
+                }
+                product.Tags = tags;
 
                 //if (formFiles.Count > 0)
                 //{

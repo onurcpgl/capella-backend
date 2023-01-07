@@ -58,6 +58,10 @@ namespace Persistence
             services.AddScoped<IVariantValueWriteRepository, VariantValueWriteRepository>();
             services.AddScoped<IVariantItemReadRepository, VariantItemReadRepository>();
             services.AddScoped<IVariantItemWriteRepository, VariantItemWriteRepository>();
+            services.AddScoped<IBrandReadRepository, BrandReadRepository>();
+            services.AddScoped<IBrandWriteRepository, BrandWriteRepository>();
+            services.AddScoped<ITagReadRepository, TagReadRepository>();
+            services.AddScoped<ITagWriteRepository, TagWriteRepository>();
             #endregion
 
             #region Service Registration
@@ -75,6 +79,8 @@ namespace Persistence
             services.AddScoped<IVariantService, VariantService>();
             services.AddScoped<IVariantItemService, VariantItemService>();
             services.AddScoped<IVariantValueService, VariantValueService>();
+            services.AddScoped<IBrandService, BrandService>();
+            services.AddScoped<ITagService, TagService>();
             services.AddScoped<ITokenService, TokenService>();
             #endregion
 

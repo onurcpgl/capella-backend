@@ -18,5 +18,7 @@ namespace Application.DataTransferObject
         public ICollection<ClassificationAttributeValueDto>? ClassificationAttributeValues { get; set; }
         public ICollection<VariantItemDto>? VariantItems { get; set; }
         public ICollection<GalleryDto>? Galleries { get; set; }
+        public BrandDto? Brand  { get; set; }
+        public ICollection<TagDto>? Tags { get; set; }
     }
 }
