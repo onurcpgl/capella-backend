@@ -9,7 +9,7 @@ namespace Application.Services.Variant
 {
     public interface IVariantService
     {
-        Task<bool> Save(VariantDto variantDto);
+        Task Save(VariantDto variantDto);
         Task<List<VariantDto>> GetAllVariants();
         Task<VariantDto> GetVariantByCode(string code);
     }

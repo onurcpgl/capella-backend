@@ -10,8 +10,8 @@ namespace Application.Services
 {
     public interface IUserService
     {
-        Task<bool> Save(UserDto userDto);
-        Task<List<User>> GetAllUsers();
+        Task Save(UserDto userDto);
+        Task<List<UserDto>> GetAllUsers();
         Task<User> loadByUser(LoginDto loginDto);
         Task<UserDto> GetUserByUsername(string username);
     }

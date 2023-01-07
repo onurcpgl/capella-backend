@@ -1,4 +1,5 @@
-﻿using Application.DataTransferObject;
+﻿using API.Utilities.ResponseData;
+using Application.DataTransferObject;
 using Application.Repositories;
 using Application.Repositories.ProductAbstract;
 using Application.Services;
@@ -15,39 +16,49 @@ namespace API.Controllers
     public class UnitController : ControllerBase
     {
         private readonly IUnitService _unitService;
-      
-        public UnitController(IUnitService unitService)
+        private readonly ILogger<UnitController> _logger;
+        public UnitController(IUnitService unitService, ILogger<UnitController> logger)
         {
-            _unitService = unitService;   
+            _unitService = unitService;
+            _logger = logger;
         }
 
         [HttpPost("/unit")]
         public async Task<IActionResult> Save([FromBody] UnitDto unitDto)
         {
-
-            var result =await _unitService.Save(unitDto);
-            if (!result)
+            _logger.LogInformation("Inside Save of UnitController", unitDto);
+            await _unitService.Save(unitDto);
+            var response = new ServiceResponseData
             {
-                return BadRequest();
-            }
-            else
-            {
-                return Ok(true);
-            }
+                Status = ProcessStatus.SUCCESS
+            };
+            return Ok(response);
         }
 
         [HttpGet("/units")]
         public async Task<IActionResult> GetUnits()
         {
-            var result = await _unitService.GetAllUnits();
-            return Ok(result);
+            _logger.LogInformation("Inside GetUnits of UnitController");
+            var units = await _unitService.GetAllUnits();
+            var response = new ServiceResponseData
+            {
+                Status = ProcessStatus.SUCCESS,
+                Data = units
+            };
+            return Ok(response);
         }
 
         [HttpGet("/units/{code}")]
         public async Task<ActionResult> GetUnitByCode([FromRoute] string code)
         {
-            var result = await _unitService.GetUnitByCode(code);
-            return Ok(result);
+            _logger.LogInformation("Inside GetUnitByCode of UnitController", code);
+            var unit = await _unitService.GetUnitByCode(code);
+            var response = new ServiceResponseData
+            {
+                Status = ProcessStatus.SUCCESS,
+                Data = unit
+            };
+            return Ok(response);
         }
     }
 }

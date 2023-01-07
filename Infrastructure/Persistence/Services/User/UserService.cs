@@ -30,11 +30,11 @@ namespace Persistence.Services
 
         public async Task<User> loadByUser(LoginDto loginDto)
         {
-            var user =await  _userReadRepository.GetWhereWithInclude(x => x.Username == loginDto.Username && x.Password == loginDto.Password, true, x => x.Roles).FirstOrDefaultAsync();
+            var user = await _userReadRepository.GetWhereWithInclude(x => x.Username == loginDto.Username && x.Password == loginDto.Password, true, x => x.Roles).FirstOrDefaultAsync();
             return user;
         }
 
-        public async Task<bool> Save(UserDto userDto)
+        public async Task Save(UserDto userDto)
         {
             User user = new();
             user.Firstname = userDto.Firstname;
@@ -49,14 +49,14 @@ namespace Persistence.Services
             var role = _roleReadRepository.GetWhere(role => role.Code == "user").FirstOrDefault();
             roles.Add(role);
             user.Roles = roles;
-            var result = await _userWriteRepository.AddAsync(user);
-            return result;   
+            await _userWriteRepository.AddAsync(user);  
         }
 
-        public async Task<List<User>> GetAllUsers()
+        public async Task<List<UserDto>> GetAllUsers()
         {
-            List<User> users = await _userReadRepository.GetAll().ToListAsync();
-            return users;
+            var users = await _userReadRepository.GetAll().ToListAsync();
+            var usersDto = _mapper.Map<List<UserDto>>(users);
+            return usersDto;
         }
 
         public async Task<UserDto> GetUserByUsername(string username)

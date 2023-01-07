@@ -32,24 +32,18 @@ namespace Persistence.Services
             return unitDto;
         }
 
-        public async Task<bool> Save(UnitDto unitDto)
+        public async Task Save(UnitDto unitDto)
         {
             var unit = _mapper.Map<Unit>(unitDto);
-            var result = await _unitWriteRepository.AddAsync(unit);
-            if (!result)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            await _unitWriteRepository.AddAsync(unit);
+           
         }
 
-        public async Task<List<Unit>> GetAllUnits()
+        public async Task<List<UnitDto>> GetAllUnits()
         {
-            List<Unit> units = await _unitReadRepository.GetAll().ToListAsync();
-            return units;
+            var units = await _unitReadRepository.GetAll().ToListAsync();
+            var unitsDto = _mapper.Map<List<UnitDto>>(units);
+            return unitsDto;
         }
     }
 }

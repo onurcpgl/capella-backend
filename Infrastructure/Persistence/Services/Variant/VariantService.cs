@@ -41,7 +41,7 @@ namespace Persistence.Services
             return variantDto;
         }
 
-        public async Task<bool> Save(VariantDto variantDto)
+        public async Task Save(VariantDto variantDto)
         {
             Variant variant = new();
 
@@ -52,7 +52,6 @@ namespace Persistence.Services
 
             try
             {
-                await _variantWriteRepository.AddAsync(variant);
                 var variantValues = new HashSet<VariantValue>();
                 foreach (var item in variantDto.VariantValues)
                 {
@@ -60,6 +59,8 @@ namespace Persistence.Services
                     variantValues.Add(variantValue);
 
                 }
+                await _variantWriteRepository.AddAsync(variant);
+
                 transaction.CommitAsync();
 
 
@@ -68,9 +69,6 @@ namespace Persistence.Services
             {
                 transaction.Rollback();
             }
-
-            return true;
-
         }
     }
 }

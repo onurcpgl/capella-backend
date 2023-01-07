@@ -10,8 +10,8 @@ namespace Application.Services
 {
     public interface IUnitService
     {
-        Task<bool> Save(UnitDto unitDto);
-        Task<List<Unit>> GetAllUnits();
+        Task Save(UnitDto unitDto);
+        Task<List<UnitDto>> GetAllUnits();
         Task<UnitDto> GetUnitByCode(string code);
     }
 }

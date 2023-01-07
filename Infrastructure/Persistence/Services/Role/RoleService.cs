@@ -26,10 +26,11 @@ namespace Persistence.Services
             _mapper = mapper;
         }
 
-        public async Task<List<Role>> GetAllRoles()
+        public async Task<List<RoleDto>> GetAllRoles()
         {
-            List<Role> roles = await _roleReadRepository.GetAll().Include(x => x.Permissions).ToListAsync();
-            return roles;
+            var roles = await _roleReadRepository.GetAll().Include(x => x.Permissions).ToListAsync();
+            var rolesDto = _mapper.Map<List<RoleDto>>(roles);
+            return rolesDto;
         }
 
         public async Task<RoleDto> GetRoleByCode(string code)
@@ -39,7 +40,7 @@ namespace Persistence.Services
             return roleDto;
         }
 
-        public async Task<bool> Save(RoleDto roleDto)
+        public async Task Save(RoleDto roleDto)
         {
             Role role = new();
             role.Name = roleDto.Name;
@@ -51,8 +52,7 @@ namespace Persistence.Services
                 permissions.Add(permission);
             }
             role.Permissions = permissions;
-            var result = await _roleWriteRepository.AddAsync(role);
-            return result;
+            await _roleWriteRepository.AddAsync(role);
         }
 
 

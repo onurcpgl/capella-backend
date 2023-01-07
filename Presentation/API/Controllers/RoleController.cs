@@ -1,4 +1,5 @@
-﻿using Application.DataTransferObject;
+﻿using API.Utilities.ResponseData;
+using Application.DataTransferObject;
 using Application.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,38 +11,50 @@ namespace API.Controllers
     public class RoleController : ControllerBase
     {
         private readonly IRoleService _roleService;
-        public RoleController(IRoleService roleService)
+        private readonly ILogger<RoleController> _logger;
+        public RoleController(IRoleService roleService, ILogger<RoleController> logger)
         {
             _roleService = roleService;
+            _logger = logger;
         }
 
         [HttpPost("/role")]
         public async Task<IActionResult> Save([FromBody] RoleDto roleDto)
         {
-            var result = await _roleService.Save(roleDto);
-            if (!result)
+            _logger.LogInformation("Inside Save of RoleController", roleDto);
+            await _roleService.Save(roleDto);
+            var response = new ServiceResponseData
             {
-                return BadRequest();
-            }
-            else
-            {
-                return Ok(true);
-            }
+                Status = ProcessStatus.SUCCESS
+            };
+            return Ok(response);
 
         }
 
         [HttpGet("/roles")]
         public async Task<IActionResult> GetRoles()
         {
-            var result = await _roleService.GetAllRoles();
-            return Ok(result);
+            _logger.LogInformation("Inside GetRoles of RoleController");
+            var roles = await _roleService.GetAllRoles();
+            var response = new ServiceResponseData
+            {
+                Status = ProcessStatus.SUCCESS,
+                Data = roles
+            };
+            return Ok(response);
         }
 
         [HttpGet("/roles/{code}")]
         public async Task<ActionResult> GetRoleByCode([FromRoute] string code)
         {
-            var result = await _roleService.GetRoleByCode(code);
-            return Ok(result);
+            _logger.LogInformation("Inside GetRoleByCode of RoleController",code);
+            var role = await _roleService.GetRoleByCode(code);
+            var response = new ServiceResponseData
+            {
+                Status = ProcessStatus.SUCCESS,
+                Data = role
+            };
+            return Ok(response);
         }
     }
 }

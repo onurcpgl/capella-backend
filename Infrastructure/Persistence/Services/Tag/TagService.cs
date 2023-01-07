@@ -38,19 +38,15 @@ namespace Persistence.Services
             return tagDto;
         }
 
-        public async Task<bool> Save(TagDto tagDto)
+        public async Task Save(TagDto tagDto)
         {
             Tag tag = new();
 
             tag.Code = Guid.NewGuid().ToString();
             tag.Name = tagDto.Name;
 
-            var result = await _tagWriteRepository.AddAsync(tag);
-            if (!result)
-            {
-                return false;
-            }
-            return true;
+            await _tagWriteRepository.AddAsync(tag);
+          
         }
     }
 }
