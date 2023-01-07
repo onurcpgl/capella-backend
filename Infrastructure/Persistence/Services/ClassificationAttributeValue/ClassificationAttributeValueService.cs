@@ -29,7 +29,7 @@ namespace Persistence.Services
             _productReadRepository = productReadRepository;
             _mapper = mapper;
         }
-        public async Task Save(ClassificationAttributeValueDto classificationAttributeValueDto)
+        public async Task<ClassificationAttributeValue> Save(ClassificationAttributeValueDto classificationAttributeValueDto)
         {
             ClassificationAttributeValue classificationAttributeValue = new();
             classificationAttributeValue.Value = classificationAttributeValueDto.Value;
@@ -46,10 +46,8 @@ namespace Persistence.Services
             }
             classificationAttributeValue.Options = options;
 
-            //var product = _productReadRepository.GetWhere(x => x.Code == ProductCode).FirstOrDefault();
-            //classificationAttributeValue.Product = product;
-
-            await _classificationAttributeValueWriteRepository.AddAsync(classificationAttributeValue);
+            var model = await _classificationAttributeValueWriteRepository.AddAsyncWithModel(classificationAttributeValue);
+            return model;
            
 
         }

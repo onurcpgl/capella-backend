@@ -23,7 +23,7 @@ namespace Persistence.Services
             _addressWriteRepository = addressWriteRepository;
             _userReadRepository = userReadRepository;
         }
-        public async Task<bool> Save(AddressDto addressDto)
+        public async Task Save(AddressDto addressDto)
         {
             Address address = new();
             address.Name = addressDto.Name;
@@ -35,8 +35,7 @@ namespace Persistence.Services
             address.Neighbourhood = addressDto.Neighbourhood;
             address.FullAddress = addressDto.FullAddress;
             address.User = _userReadRepository.GetWhere(u=> u.Username == addressDto.UserDto.Username).FirstOrDefault();
-            var result = await _addressWriteRepository.AddAsync(address);   
-            return result;  
+            await _addressWriteRepository.AddAsync(address);   
         }
     }
 }

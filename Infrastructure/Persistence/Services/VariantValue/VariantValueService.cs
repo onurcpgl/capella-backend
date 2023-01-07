@@ -32,12 +32,8 @@ namespace Persistence.Services
             var variant = _variantReadRepository.GetWhere(x => x.Code == VariantCode).FirstOrDefault();
             variantValue.Variant = variant;
 
-            var result = await _variantValueWriteRepository.AddAsync(variantValue);
-            if (!result)
-            {
-                return null;
-            }
-            return variantValue;
+            var model = await _variantValueWriteRepository.AddAsyncWithModel(variantValue);
+            return model;
         }
     }
 }

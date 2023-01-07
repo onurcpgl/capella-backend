@@ -51,8 +51,9 @@ namespace Persistence.Services
             }
             variantItem.ClassificationAttributeValues = classificationAttributeValues;        
 
-            var result = await _variantItemWriteRepository.AddAsync(variantItem);
-            return result ? variantItem : null;
+            var model = await _variantItemWriteRepository.AddAsyncWithModel(variantItem);
+            return model;
+
         }
     }
 }

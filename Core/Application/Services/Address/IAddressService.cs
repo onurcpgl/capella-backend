@@ -9,6 +9,6 @@ namespace Application.Services.Address
 {
     public interface IAddressService
     {
-        Task<bool> Save(AddressDto addressDto);
+        Task Save(AddressDto addressDto);
     }
 }
