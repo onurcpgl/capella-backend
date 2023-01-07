@@ -10,6 +10,6 @@ namespace Application.Services
 {
     public interface IClassificationAttributeValueService
     {
-        Task<ClassificationAttributeValue> Save(ClassificationAttributeValueDto classificationAttributeValueDto);
+        Task Save(ClassificationAttributeValueDto classificationAttributeValueDto);
     }
 }

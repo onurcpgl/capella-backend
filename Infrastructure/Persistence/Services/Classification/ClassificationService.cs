@@ -30,39 +30,33 @@ namespace Persistence.Services
             _mapper = mapper;
             _optionsService = optionsService;
         }
-        public async Task<bool> Save(ClassificationDto classificationDto)
+        public async Task Save(ClassificationDto classificationDto)
         {
             
             Classification classification = new();
-
             classification.Name = classificationDto.Name;
             classification.Code = Guid.NewGuid().ToString();
             classification.DataType = (Domain.Enums.DataType)classificationDto.DataType;
+
             var transaction = await _classificationWriteRepository.DbTransactional();
           
-                try
-                {
+            try
+            {
 
-                    await _classificationWriteRepository.AddAsync(classification);
-                    var options = new HashSet<Options>();
-                        foreach (var item in classificationDto.Options)
-                        {
-                            var option = await _optionsService.Save(item,classification.Code);
-                            options.Add(option);
+                await _classificationWriteRepository.AddAsync(classification);
+                var options = new HashSet<Options>();
+                foreach (var item in classificationDto.Options)
+                {
+                    var option = await _optionsService.Save(item,classification.Code);
+                    options.Add(option);
                         
-                        }
-
-                    
-
-                    transaction.CommitAsync();
-
-
-                }catch (Exception ex)
-                {
-                    transaction.Rollback();
                 }
+                transaction.CommitAsync();
 
-            return true;
+            }catch (Exception ex)
+            {
+                transaction.Rollback();
+            }
 
         }
 

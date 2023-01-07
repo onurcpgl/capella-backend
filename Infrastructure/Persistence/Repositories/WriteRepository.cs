@@ -16,12 +16,10 @@ namespace Persistence.Repositories
     public class WriteRepository<T> : IWriteRepository<T> where T:BaseEntity,ItemEntity
     {
         private readonly CapellaDbContext _context;
-        private readonly ILogger<WriteRepository<T>> _logger;
 
-        public WriteRepository(CapellaDbContext context, ILogger<WriteRepository<T>> logger)
+        public WriteRepository(CapellaDbContext context)
         {
             _context = context;
-            _logger = logger;
         }
 
         public DbSet<T> Table => _context.Set<T>();
@@ -85,6 +83,20 @@ namespace Persistence.Repositories
             {
                 throw new Exception(ex.ToString(), ex);
             }
+        }
+        public async Task<T> AddAsyncWithModel(T model)
+        {
+            try
+            {
+                EntityEntry<T> entityEntry = Table.Add(model);
+                await _context.SaveChangesAsync();
+                return entityEntry.Entity;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString(), ex);
+            }
+
         }
 
     }

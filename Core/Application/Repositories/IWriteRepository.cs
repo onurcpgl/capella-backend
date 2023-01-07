@@ -15,7 +15,7 @@ namespace Application.Repositories
         Task RemoveAsync(T model);
         Task UpdateAsync(T model, int id);
         Task<IDbContextTransaction> DbTransactional();
-
+        Task<T> AddAsyncWithModel(T model);
 
     }
 }

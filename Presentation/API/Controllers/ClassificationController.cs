@@ -1,4 +1,5 @@
-﻿using Application.DataTransferObject;
+﻿using API.Utilities.ResponseData;
+using Application.DataTransferObject;
 using Application.Repositories;
 using Application.Services;
 using AutoMapper;
@@ -15,42 +16,57 @@ namespace API.Controllers
     {
 
         private readonly IClassificationService _classificationService;
-
-        public ClassificationController(IClassificationService classificationService)
+        private readonly ILogger<ClassificationController> _logger;
+        public ClassificationController(IClassificationService classificationService, ILogger<ClassificationController> logger)
         {
             _classificationService = classificationService;
+            _logger = logger;
         }
 
         [HttpPost("/classification")]
         public async Task<IActionResult> Save([FromBody] ClassificationDto classificationDto)
         {
-           
-           var result = await _classificationService.Save(classificationDto);
 
-           if (!result)
-           {
-                return BadRequest();
-           }
-           else
-           {
-                return Ok(true);
-           }
+            await _classificationService.Save(classificationDto);
+
+            _logger.LogInformation("Inside Save of CategoryController", classificationDto);
+            await _classificationService.Save(classificationDto);
+            var response = new ServiceResponseData
+            {
+                Status = ProcessStatus.SUCCESS
+            };
+            return Ok(response);
 
         }
 
         [HttpGet("/classifications")]
         public async Task<IActionResult> GetClassifications()
         {
-            List<Classification> classification = await _classificationService.GetAllClassifications();
-            return Ok(classification);
+            _logger.LogInformation("Inside GetClassification of ClassificationController");
+            List<Classification> classifications = await _classificationService.GetAllClassifications();
+            var response = new ServiceResponseData
+            {
+                Status = ProcessStatus.SUCCESS,
+                Data = classifications
+            };
+            return Ok(response);
         }
 
 
         [HttpGet("/classifications/{code}")]
         public async Task<ActionResult> GetClassificationByCode([FromRoute] string code)
         {
-            var result = await _classificationService.GetClassificationByCode(code);
-            return Ok(result);
+            _logger.LogInformation("Inside GetClassifications of ClassificationController");
+
+            var classification = await _classificationService.GetClassificationByCode(code);
+
+            var response = new ServiceResponseData
+            {
+                Status = ProcessStatus.SUCCESS,
+                Data = classification
+            };
+
+            return Ok(response);
         }
 
 

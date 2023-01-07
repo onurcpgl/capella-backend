@@ -10,7 +10,7 @@ namespace Application.Services
 {
     public interface IClassificationService
     {
-        Task<bool> Save(ClassificationDto classificationDto);
+        Task Save(ClassificationDto classificationDto);
         Task<List<Classification>> GetAllClassifications();
         Task<ClassificationDto> GetClassificationByCode(string code);
 
