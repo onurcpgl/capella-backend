@@ -18,7 +18,7 @@ namespace API.Controllers
         [HttpPost("/address")]
         public async Task<IActionResult> Save([FromBody] AddressDto addressDto)
         {
-            var result = await _addressService.save(addressDto);
+            var result = await _addressService.Save(addressDto);
             if (!result)
             {
                 return BadRequest();

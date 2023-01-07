@@ -33,7 +33,7 @@ namespace API.Controllers
         [HttpGet("/brands/{code}")]
         public async Task<ActionResult> GetBrandByCode([FromRoute] string code)
         {
-            var result = await _brandService.getBrandByCode(code);
+            var result = await _brandService.GetBrandByCode(code);
             return Ok(result);
         }
     }
