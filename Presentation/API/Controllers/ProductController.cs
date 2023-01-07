@@ -47,6 +47,10 @@ namespace API.Controllers
         {
             _logger.LogInformation("Ürünlerin tamamını listeleme isteği geldi.");
             List<Product> products = await _productService.GetAllProducts();
+            if(products.Count == 0)
+            {
+                throw new Exception("Hata liste boş");
+            }
             return Ok(products);
         }
 
