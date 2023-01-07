@@ -11,12 +11,9 @@ namespace Application.Repositories
     public interface IWriteRepository<T>: IRepository<T> where T :BaseEntity,ItemEntity
     {
         
-        Task<bool> AddAsync(T model);
-        Task<bool> AddRangeAsync(List<T> datas);
-        Task<bool> Remove(T model);
-        bool RemoveRange(List<T> datas);
-        Task<bool> Update(T model);
-        Task<bool> UpdateMatchEntity(T model, int id);
+        Task AddAsync(T model);
+        Task RemoveAsync(T model);
+        Task UpdateAsync(T model, int id);
         Task<IDbContextTransaction> DbTransactional();
 
 

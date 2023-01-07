@@ -24,11 +24,10 @@ namespace Persistence.Services
             _mapper = mapper;
         }
 
-        public async Task<bool> Delete(string code)
+        public async Task Delete(string code)
         {
             var brand = _brandReadRepository.GetWhere(x => x.Code == code).FirstOrDefault();
-            var result = await _brandWriteRepository.Remove(brand);
-            return result;
+            await _brandWriteRepository.RemoveAsync(brand);
         }
 
         public async Task<BrandDto> GetBrandByCode(string code)
@@ -38,27 +37,19 @@ namespace Persistence.Services
             return brandDto;
         }
 
-        public async Task<bool> Save(BrandDto brandDto)
+        public async Task Save(BrandDto brandDto)
         {
             Brand brand = new();
-
             brand.Code = Guid.NewGuid().ToString();
             brand.Name = brandDto.Name;
-
-            var result = await _brandWriteRepository.AddAsync(brand);
-            if (!result)
-            {
-                return false;
-            }
-            return true;
+            await _brandWriteRepository.AddAsync(brand);
+           
         }
 
-        public async Task<bool> Update(BrandDto brandDto)
+        public async Task Update(BrandDto brandDto)
         {
-            
-           var brand = _mapper.Map<Brand>(brandDto);
-           var result = await _brandWriteRepository.UpdateMatchEntity(brand, brandDto.Id);
-           return result;
+            var brand = _brandReadRepository.GetWhere(x => x.Code == brandDto.Code).FirstOrDefault();
+            await _brandWriteRepository.UpdateAsync(brand, brandDto.Id);
         }
     }
 }

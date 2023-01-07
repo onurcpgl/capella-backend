@@ -1,4 +1,5 @@
-﻿using Application.DataTransferObject;
+﻿using API.Utilities.ResponseData;
+using Application.DataTransferObject;
 using Application.Repositories;
 using Application.Services;
 using AutoMapper;
@@ -14,60 +15,65 @@ namespace API.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
-       
+        private readonly ILogger<CategoryController> _logger;
 
-        public CategoryController(ICategoryService categoryService)
+        public CategoryController(ICategoryService categoryService, ILogger<CategoryController> logger)
         {
             _categoryService = categoryService;
+            _logger = logger; 
 
         }
       
         [HttpPost("/category")]
         public async Task<IActionResult> Save([FromBody] CategoryDto categoryDto)
         {
-            var result = await _categoryService.Save(categoryDto);
-            if (!result)
+            _logger.LogInformation("Inside Save of CategoryController", categoryDto);
+            await _categoryService.Save(categoryDto);
+            var response = new ServiceResponseData
             {
-                return BadRequest();
-            }
-            else
-            {
-                return Ok(true);
-            }
+                Status = ProcessStatus.SUCCESS
+            };
+            return Ok(response);
+
         }
 
         [HttpGet("/categories")]
         public async Task<IActionResult> GetCategories()
         {
-            var result = await _categoryService.GetAllCategories();
-            return Ok(result);
+            _logger.LogInformation("Inside GetCategories of CategoryController");
+            var categories = await _categoryService.GetAllCategories();
+            var response = new ServiceResponseData
+            {
+                Status = ProcessStatus.SUCCESS,
+                Data = categories
+            };
+            return Ok(response);
         }
 
         [HttpPost("/category/reorder")]
         public async Task<IActionResult> CategoryReorder([FromBody] CategoryReorderDto categoryReorderDto)
         {
-            var result = await _categoryService.ChangeLocationCategory(categoryReorderDto);
-            if (!result)
+            _logger.LogInformation("Inside CategoryReorder of CategoryController", categoryReorderDto);
+            await _categoryService.ChangeLocationCategory(categoryReorderDto);
+            var response = new ServiceResponseData
             {
-                return BadRequest();
-            }
-            else
-            {
-                return Ok(true);
-            }
+                Status = ProcessStatus.SUCCESS,
+            };
+            return Ok(response);
+
         }
 
         [HttpGet("/category/{code}")]
         public async Task<IActionResult> GetCategoryByCode(string code)
         {
-            var result = await _categoryService.GetCategoryByCode(code);
-
-            if (result is null)
+            _logger.LogInformation("Inside GetCategoryByCode of CategoryController", code);
+            var category = await _categoryService.GetCategoryByCode(code);
+            var response = new ServiceResponseData
             {
-                return BadRequest();
-            }
-
-            return Ok(result);
+                Status = ProcessStatus.SUCCESS,
+                Data = category
+            };
+            return Ok(response);
         }
     }
 }

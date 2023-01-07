@@ -27,7 +27,7 @@ namespace Persistence.Services
             _mapper = mapper;
         }
 
-        public async Task<bool> Save(CategoryDto categoryDto)
+        public async Task Save(CategoryDto categoryDto)
         {
             var category = _mapper.Map<Category>(categoryDto);
             
@@ -41,16 +41,7 @@ namespace Persistence.Services
 
             category.Level = (maxLevel ?? 0) + 1;
             category.Code = Guid.NewGuid().ToString();
-            var result = await _categoryWriteRepository.AddAsync(category);
-
-            if (!result)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            await _categoryWriteRepository.AddAsync(category); 
         }
 
         public async Task<List<CategoryListDto>> GetAllCategories()
@@ -105,7 +96,7 @@ namespace Persistence.Services
                     .ToList();
         }
 
-        public async Task<bool> ChangeLocationCategory(CategoryReorderDto categoryReorderDto)
+        public async Task ChangeLocationCategory(CategoryReorderDto categoryReorderDto)
         {
             List<Category> incCategories = new List<Category>();
             List<Category> decCategories = new List<Category>();
@@ -120,7 +111,7 @@ namespace Persistence.Services
             //kendi ekseni
             if (category.ParentCategory == categoryParent)
             {
-                var status = await _categoryWriteRepository.Update(category);
+                await _categoryWriteRepository.UpdateAsync(category,category.Id);
 
                 incCategories = await _categoryReadRepository.GetWhereWithInclude(x => x.Level >= categoryReorderDto.level && x.Level <= oldLevel
                     && x.Code != categoryReorderDto.sourceCode && x.ParentCategory.Code == categoryReorderDto.destinationCode, true, x => x.ParentCategory).ToListAsync();
@@ -138,7 +129,7 @@ namespace Persistence.Services
                 decCategories = await _categoryReadRepository.GetWhereWithInclude(x => x.Level >= oldLevel && x.Code != categoryReorderDto.sourceCode && x.ParentCategory == category.ParentCategory, true, x => x.ParentCategory).ToListAsync();
 
                 category.ParentCategory = categoryParent;
-                var status = await _categoryWriteRepository.Update(category);
+                await _categoryWriteRepository.UpdateAsync(category,category.Id);
 
             }
 
@@ -147,14 +138,8 @@ namespace Persistence.Services
 
             foreach (var item in incCategories.Concat(decCategories))
             {
-                bool updateItem = await _categoryWriteRepository.Update(item);
-                if (!updateItem)
-                {
-                    return false;
-                }
+                await _categoryWriteRepository.UpdateAsync(item,item.Id);
             }
-
-            return true;
 
         }
 

@@ -10,9 +10,9 @@ namespace Application.Services
 {
     public interface ICategoryService
     {
-        Task<bool> Save(CategoryDto categoryDto);
+        Task Save(CategoryDto categoryDto);
         Task<List<CategoryListDto>> GetAllCategories();
-        Task<bool> ChangeLocationCategory(CategoryReorderDto categoryReorderDto);
+        Task ChangeLocationCategory(CategoryReorderDto categoryReorderDto);
         Task<CategoryDto> GetCategoryByCode(string code);
     }
 }

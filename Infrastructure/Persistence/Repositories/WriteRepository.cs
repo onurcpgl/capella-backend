@@ -3,6 +3,7 @@ using Domain.Entities.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Logging;
 using Persistence.Contexts;
 using System;
 using System.Collections.Generic;
@@ -15,72 +16,76 @@ namespace Persistence.Repositories
     public class WriteRepository<T> : IWriteRepository<T> where T:BaseEntity,ItemEntity
     {
         private readonly CapellaDbContext _context;
-        public WriteRepository(CapellaDbContext context)
+        private readonly ILogger<WriteRepository<T>> _logger;
+
+        public WriteRepository(CapellaDbContext context, ILogger<WriteRepository<T>> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public DbSet<T> Table => _context.Set<T>();
-
-        public async Task<bool> AddAsync(T model)
-        {
-            EntityEntry<T> entityEntry = await Table.AddAsync(model);
-            return await _context.SaveChangesAsync()>-1;
-        }
-
-        public async Task<bool> AddRangeAsync(List<T> datas)
-        {
-            await Table.AddRangeAsync(datas);
-            return true;
-        }
-
-        public async Task<bool> Remove(T model)
-        {
-            EntityEntry<T> entityEntry = Table.Remove(model);
-            return _context.SaveChanges() > -1;
-
-        }
-
-        public bool RemoveRange(List<T> datas)
-        {
-            Table.RemoveRange(datas);
-            return true;
-        }
-
-        public async Task<bool> Update(T model)
-        {
-            EntityEntry<T> entityEntry = Table.Update(model);
-            entityEntry.State = EntityState.Modified;
-            return _context.SaveChanges() > -1;
-        }
 
         public async Task<IDbContextTransaction> DbTransactional()
         {
             return await _context.Database.BeginTransactionAsync();
         }
 
-        public async Task<bool> UpdateMatchEntity(T newModel, int id)
+        public async Task AddAsync(T model)
         {
-            T dbModel = await Table.FirstOrDefaultAsync(data => data.Id == id);
-
-            if (dbModel == null)
-                throw new ArgumentNullException(nameof(dbModel));
-
-            if (newModel == null)
-                throw new ArgumentNullException(nameof(newModel));
-
-            _context.Entry(dbModel).CurrentValues.SetValues(newModel);
-
-            foreach (var property in _context.Entry(dbModel).Properties)
+            try
             {
-                if (property.CurrentValue == null) 
-                {
-                    _context.Entry(dbModel).Property(property.Metadata.Name).IsModified = false; 
-                }
+                EntityEntry<T> entityEntry = Table.Add(model);
+                await _context.SaveChangesAsync();
             }
-
-            return _context.SaveChanges() > -1;
-
+            catch (Exception ex) {
+                throw new Exception(ex.ToString(), ex);
+            }
+ 
         }
+
+        public async Task RemoveAsync(T model)
+        {
+            try
+            {
+                EntityEntry<T> entityEntry = Table.Remove(model);
+                await _context.SaveChangesAsync();
+
+            }catch(Exception ex)
+            {
+                throw new Exception(ex.ToString(), ex);
+            }
+           
+        }
+        public async Task UpdateAsync(T newModel, int id)
+        {
+            try
+            {
+                T dbModel = Table.FirstOrDefault(data => data.Id == id);
+
+                if (dbModel == null)
+                    throw new ArgumentNullException(nameof(dbModel));
+
+                if (newModel == null)
+                    throw new ArgumentNullException(nameof(newModel));
+
+                _context.Entry(dbModel).CurrentValues.SetValues(newModel);
+
+                foreach (var property in _context.Entry(dbModel).Properties)
+                {
+                    if (property.CurrentValue == null)
+                    {
+                        _context.Entry(dbModel).Property(property.Metadata.Name).IsModified = false;
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+
+            }catch (Exception ex)
+            {
+                throw new Exception(ex.ToString(), ex);
+            }
+        }
+
     }
 }

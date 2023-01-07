@@ -9,9 +9,9 @@ namespace Application.Services
 {
     public interface IBrandService
     {
-        Task<bool> Save(BrandDto brandDto);
+        Task Save(BrandDto brandDto);
         Task<BrandDto> GetBrandByCode(string code);
-        Task<bool> Update(BrandDto brandDto);
-        Task<bool> Delete(string code);
+        Task Update(BrandDto brandDto);
+        Task Delete(string code);
     }
 }
