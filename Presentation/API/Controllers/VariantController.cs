@@ -16,10 +16,10 @@ namespace API.Controllers
         }
 
         [HttpPost("/variant")]
-        public async Task<IActionResult> AddVariant([FromBody] VariantDto variantDto)
+        public async Task<IActionResult> Save([FromBody] VariantDto variantDto)
         {
 
-            var result = await _variantService.save(variantDto);
+            var result = await _variantService.Save(variantDto);
 
             if (!result)
             {
@@ -30,6 +30,20 @@ namespace API.Controllers
                 return Ok(true);
             }
 
+        }
+
+        [HttpGet("/variants")]
+        public async Task<IActionResult> GetVariants()
+        {
+            var result = await _variantService.GetAllVariants();
+            return Ok(result);
+        }
+
+        [HttpGet("/variants/{code}")]
+        public async Task<ActionResult> GetVariantByCode([FromRoute] string code)
+        {
+            var result = await _variantService.GetVariantByCode(code);
+            return Ok(result);
         }
     }
 }

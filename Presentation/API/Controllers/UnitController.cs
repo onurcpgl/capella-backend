@@ -15,18 +15,17 @@ namespace API.Controllers
     public class UnitController : ControllerBase
     {
         private readonly IUnitService _unitService;
-       
-
+      
         public UnitController(IUnitService unitService)
         {
             _unitService = unitService;   
         }
 
         [HttpPost("/unit")]
-        public async Task<IActionResult> AddUnit([FromBody] UnitDto unitDto)
+        public async Task<IActionResult> Save([FromBody] UnitDto unitDto)
         {
 
-            var result =await _unitService.saveUnit(unitDto);
+            var result =await _unitService.Save(unitDto);
             if (!result)
             {
                 return BadRequest();
@@ -38,9 +37,16 @@ namespace API.Controllers
         }
 
         [HttpGet("/units")]
-        public async Task<IActionResult> UnitList()
+        public async Task<IActionResult> GetUnits()
         {
-            var result = await _unitService.unitList();
+            var result = await _unitService.GetAllUnits();
+            return Ok(result);
+        }
+
+        [HttpGet("/units/{code}")]
+        public async Task<ActionResult> GetUnitByCode([FromRoute] string code)
+        {
+            var result = await _unitService.GetUnitByCode(code);
             return Ok(result);
         }
     }

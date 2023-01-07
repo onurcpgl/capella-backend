@@ -23,9 +23,9 @@ namespace API.Controllers
         }
       
         [HttpPost("/category")]
-        public async Task<IActionResult> AddCategory([FromBody] CategoryDto categoryDto)
+        public async Task<IActionResult> Save([FromBody] CategoryDto categoryDto)
         {
-            var result = await _categoryService.saveCategory(categoryDto);
+            var result = await _categoryService.Save(categoryDto);
             if (!result)
             {
                 return BadRequest();
@@ -37,16 +37,16 @@ namespace API.Controllers
         }
 
         [HttpGet("/categories")]
-        public async Task<IActionResult> CategoryList()
+        public async Task<IActionResult> GetCategories()
         {
-            var result = await _categoryService.categoryList();
+            var result = await _categoryService.GetAllCategories();
             return Ok(result);
         }
 
         [HttpPost("/category/reorder")]
         public async Task<IActionResult> CategoryReorder([FromBody] CategoryReorderDto categoryReorderDto)
         {
-            var result = await _categoryService.changeLocationCategory(categoryReorderDto);
+            var result = await _categoryService.ChangeLocationCategory(categoryReorderDto);
             if (!result)
             {
                 return BadRequest();
@@ -58,7 +58,7 @@ namespace API.Controllers
         }
 
         [HttpGet("/category/{code}")]
-        public async Task<IActionResult> GetCategory(string code)
+        public async Task<IActionResult> GetCategoryByCode(string code)
         {
             var result = await _categoryService.GetCategoryByCode(code);
 

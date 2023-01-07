@@ -10,10 +10,8 @@ namespace Application.Services
 {
     public interface IRoleService
     {
-        Task<bool> save(RoleDto roleDto);
-
-        Task<Role> getRoleById(int roleId);
-
-        Task<List<Role>> getAll();
+        Task<bool> Save(RoleDto roleDto);
+        Task<List<Role>> GetAllRoles();
+        Task<RoleDto> GetRoleByCode(string code);
     }
 }

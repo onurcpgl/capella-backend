@@ -17,7 +17,6 @@ namespace API.Controllers
     {
         private readonly IProductService _productService;
        
-
         public ProductController(IProductService productService)
         {
             _productService = productService;
@@ -26,11 +25,11 @@ namespace API.Controllers
         [HttpPost("/product")]
         //[ServiceFilter(typeof(CustomAuthorizationFilter)), PermissionAttribute("product_added")]
         //public async Task<IActionResult> AddProduct([FromForm] AddProductRequest addProductRequest)
-        public async Task<IActionResult> AddProduct([FromBody] ProductDto productDto)
+        public async Task<IActionResult> Save([FromBody] ProductDto productDto)
         {
             //ProductDto productDto = JsonConvert.DeserializeObject<ProductDto>(addProductRequest.ProductData);
             //var result = await _productService.saveProduct(productDto, addProductRequest.Galleries);
-            var result = await _productService.saveProduct(productDto);
+            var result = await _productService.Save(productDto);
             if (!result)
             {
                 return BadRequest();
@@ -42,13 +41,13 @@ namespace API.Controllers
         }
 
         [HttpGet("/products")]
-        public async Task<IActionResult> ProductList()
+        public async Task<IActionResult> GetProducts()
         {
-            List<Product> products = await _productService.productList();
+            List<Product> products = await _productService.GetAllProducts();
             return Ok(products);
         }
 
-        [HttpGet("{code}")]
+        [HttpGet("/products/{code}")]
         public async Task<IActionResult> GetProductByCode(string code)
         {
             var product = await _productService.GetProductByCode(code);

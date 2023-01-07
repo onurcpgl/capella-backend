@@ -16,7 +16,7 @@ namespace API.Controllers
         }
 
         [HttpPost("/tag")]
-        public async Task<IActionResult> AddTag([FromBody] TagDto tagDto)
+        public async Task<IActionResult> Save([FromBody] TagDto tagDto)
         {
             var result = await _tagService.Save(tagDto);
             if (!result)
@@ -28,6 +28,20 @@ namespace API.Controllers
                 return Ok(true);
             }
 
+        }
+
+        [HttpGet("/tags")]
+        public async Task<IActionResult> GetTags()
+        {
+            var result = await _tagService.GetAllTags();
+            return Ok(result);
+        }
+
+        [HttpGet("/tags/{code}")]
+        public async Task<ActionResult> GetTagByCode([FromRoute] string code)
+        {
+            var result = await _tagService.GetTagByCode(code);
+            return Ok(result);
         }
     }
 }

@@ -16,9 +16,9 @@ namespace API.Controllers
         }
 
         [HttpPost("/media")]
-        public async Task<IActionResult> AddMedia(IFormFile formFile)
+        public async Task<IActionResult> Save(IFormFile formFile)
         {
-            var result =  await _mediaService.storage(formFile, true);
+            var result =  await _mediaService.Storage(formFile, true);
             return Ok(result);
 
         }

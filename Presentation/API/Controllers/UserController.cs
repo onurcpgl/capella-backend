@@ -16,9 +16,9 @@ namespace API.Controllers
         }
 
         [HttpPost("/user")]
-        public async Task<IActionResult> AddUser([FromBody] UserDto userDto)
+        public async Task<IActionResult> Save([FromBody] UserDto userDto)
         {
-            var result = await _userService.save(userDto);
+            var result = await _userService.Save(userDto);
             if (!result)
             {
                 return BadRequest();
@@ -31,16 +31,16 @@ namespace API.Controllers
         }
 
         [HttpGet("/user")]
-        public async Task<IActionResult> UserList()
+        public async Task<IActionResult> GetUsers()
         {
-            var result = await _userService.userList();
+            var result = await _userService.GetAllUsers();
             return Ok(result);
         }
 
         [HttpGet("/users/{username}")]
         public async Task<ActionResult> GetUserByUsername([FromRoute] string username)
         {
-            var result = await _userService.getUserByUsername(username);
+            var result = await _userService.GetUserByUsername(username);
             return Ok(result);
         }
 

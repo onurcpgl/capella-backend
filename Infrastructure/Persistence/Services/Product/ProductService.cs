@@ -52,7 +52,7 @@ namespace Persistence.Services
 
         #region SaveProduct
         //public async Task<bool> saveProduct(ProductDto productDto, List<IFormFile> formFiles)
-        public async Task<bool> saveProduct(ProductDto productDto)
+        public async Task<bool> Save(ProductDto productDto)
         {
             var transaction = await _productWriteRepository.DbTransactional();
             Product product = new();
@@ -125,7 +125,7 @@ namespace Persistence.Services
         }
         #endregion
         
-        public async Task<List<Product>> productList()
+        public async Task<List<Product>> GetAllProducts()
         {
             List<Product> products = await _productReadRepository.GetAll().ToListAsync();
             return products;
@@ -135,12 +135,11 @@ namespace Persistence.Services
         {
             var product = await _productReadRepository.GetWhere(x => x.Code == code)
                 .Include(x=> x.Categories)
-                .ThenInclude(x=> x.Classifications)
                 .Include(x=>x.ClassificationAttributeValues)
                 .Include(x=>x.Galleries)
                 .ThenInclude(x=>x.Medias)
+                .Include(x=> x.VariantItems)
                 .FirstOrDefaultAsync();
-
 
             var productDto = _mapper.Map<ProductDto>(product);
 

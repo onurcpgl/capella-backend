@@ -16,9 +16,9 @@ namespace API.Controllers
         }
 
         [HttpPost("/role")]
-        public async Task<IActionResult> AddRole([FromBody] RoleDto roleDto)
+        public async Task<IActionResult> Save([FromBody] RoleDto roleDto)
         {
-            var result = await _roleService.save(roleDto);
+            var result = await _roleService.Save(roleDto);
             if (!result)
             {
                 return BadRequest();
@@ -30,18 +30,17 @@ namespace API.Controllers
 
         }
 
-        [HttpGet("{roleId}")]
-        public async Task<IActionResult> GetRoleById(int roleId)
+        [HttpGet("/roles")]
+        public async Task<IActionResult> GetRoles()
         {
-            var role = await _roleService.getRoleById(roleId);
-            return Ok(role);
-
+            var result = await _roleService.GetAllRoles();
+            return Ok(result);
         }
 
-        [HttpGet("/roles")]
-        public async Task<IActionResult> GetAllRoles()
+        [HttpGet("/roles/{code}")]
+        public async Task<ActionResult> GetRoleByCode([FromRoute] string code)
         {
-            var result = await _roleService.getAll();
+            var result = await _roleService.GetRoleByCode(code);
             return Ok(result);
         }
     }

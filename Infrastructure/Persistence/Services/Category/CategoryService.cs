@@ -27,7 +27,7 @@ namespace Persistence.Services
             _mapper = mapper;
         }
 
-        public async Task<bool> saveCategory(CategoryDto categoryDto)
+        public async Task<bool> Save(CategoryDto categoryDto)
         {
             var category = _mapper.Map<Category>(categoryDto);
             
@@ -53,14 +53,7 @@ namespace Persistence.Services
             }
         }
 
-
-        public async Task<Category> getCategoryById(int id)
-        {
-            var category = await _categoryReadRepository.GetWhereWithInclude(x => x.Id == id, true, x => x.SubCategories, x => x.ParentCategory).FirstOrDefaultAsync();
-            return category;
-        }
-
-        public async Task<List<CategoryListDto>> categoryList()
+        public async Task<List<CategoryListDto>> GetAllCategories()
         {
             List<Category> categories = await _categoryReadRepository.GetAll().ToListAsync();
 
@@ -112,7 +105,7 @@ namespace Persistence.Services
                     .ToList();
         }
 
-        public async Task<bool> changeLocationCategory(CategoryReorderDto categoryReorderDto)
+        public async Task<bool> ChangeLocationCategory(CategoryReorderDto categoryReorderDto)
         {
             List<Category> incCategories = new List<Category>();
             List<Category> decCategories = new List<Category>();

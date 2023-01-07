@@ -34,7 +34,7 @@ namespace Persistence.Services
             return user;
         }
 
-        public async Task<bool> save(UserDto userDto)
+        public async Task<bool> Save(UserDto userDto)
         {
             User user = new();
             user.Firstname = userDto.Firstname;
@@ -53,13 +53,13 @@ namespace Persistence.Services
             return result;   
         }
 
-        public async Task<List<User>> userList()
+        public async Task<List<User>> GetAllUsers()
         {
             List<User> users = await _userReadRepository.GetAll().ToListAsync();
             return users;
         }
 
-        public async Task<UserDto> getUserByUsername(string username)
+        public async Task<UserDto> GetUserByUsername(string username)
         {
             var user = await _userReadRepository.GetWhere(x => x.Username == username).Include(x=>x.Roles).ThenInclude(x=> x.Permissions).FirstOrDefaultAsync();
             var userDto = _mapper.Map<UserDto>(user);

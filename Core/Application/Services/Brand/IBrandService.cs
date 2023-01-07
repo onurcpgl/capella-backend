@@ -10,5 +10,6 @@ namespace Application.Services
     public interface IBrandService
     {
         Task<bool> Save(BrandDto brandDto);
+        Task<BrandDto> GetBrandByCode(string code);
     }
 }

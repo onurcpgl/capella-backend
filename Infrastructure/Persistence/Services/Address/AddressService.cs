@@ -23,7 +23,7 @@ namespace Persistence.Services
             _addressWriteRepository = addressWriteRepository;
             _userReadRepository = userReadRepository;
         }
-        public async Task<bool> save(AddressDto addressDto)
+        public async Task<bool> Save(AddressDto addressDto)
         {
             Address address = new();
             address.Name = addressDto.Name;

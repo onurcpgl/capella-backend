@@ -16,7 +16,7 @@ namespace API.Controllers
         }
 
         [HttpPost("/address")]
-        public async Task<IActionResult> AddAddress([FromBody] AddressDto addressDto)
+        public async Task<IActionResult> Save([FromBody] AddressDto addressDto)
         {
             var result = await _addressService.save(addressDto);
             if (!result)

@@ -22,10 +22,10 @@ namespace API.Controllers
         }
 
         [HttpPost("/classification")]
-        public async Task<IActionResult> AddClassification([FromBody] ClassificationDto classificationDto)
+        public async Task<IActionResult> Save([FromBody] ClassificationDto classificationDto)
         {
            
-           var result = await _classificationService.saveClassification(classificationDto);
+           var result = await _classificationService.Save(classificationDto);
 
            if (!result)
            {
@@ -39,10 +39,18 @@ namespace API.Controllers
         }
 
         [HttpGet("/classifications")]
-        public async Task<IActionResult> ClassificationList()
+        public async Task<IActionResult> GetClassifications()
         {
-            List<Classification> classification = await _classificationService.getAll();
+            List<Classification> classification = await _classificationService.GetAllClassifications();
             return Ok(classification);
+        }
+
+
+        [HttpGet("/classifications/{code}")]
+        public async Task<ActionResult> GetClassificationByCode([FromRoute] string code)
+        {
+            var result = await _classificationService.GetClassificationByCode(code);
+            return Ok(result);
         }
 
 

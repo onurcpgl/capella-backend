@@ -2,6 +2,7 @@
 using Application.Repositories;
 using Application.Repositories.ProductAbstract;
 using Application.Services;
+using AutoMapper;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -16,27 +17,20 @@ namespace Persistence.Services
     {
         private readonly IClassificationReadRepository _classificationReadRepository;
         private readonly IClassificationWriteRepository _classificationWriteRepository;
-      
-        private readonly IClassificationAttributeValueWriteRepository _classificationAttributeValueWriteRepository;
-        private readonly ICategoryReadRepository _categoryReadRepository;
         private readonly IOptionsService _optionsService;
-        private readonly IProductReadRepository _productReadRepository;
-        private readonly IUnitReadRepository _unitReadRepository;
+        private readonly IMapper _mapper;
 
-        public ClassificationService(IClassificationReadRepository classificationReadRepository, IClassificationWriteRepository classificationWriteRepository,
-             ICategoryReadRepository categoryReadRepository,
-            IUnitReadRepository unitReadRepository, IProductReadRepository productReadRepository, IClassificationAttributeValueWriteRepository classificationAttributeValueWriteRepository, IOptionsService optionsService)
+        public ClassificationService(IClassificationReadRepository classificationReadRepository,
+            IClassificationWriteRepository classificationWriteRepository,
+            IMapper mapper,
+            IOptionsService optionsService)
         {
             _classificationReadRepository = classificationReadRepository;
-            _classificationWriteRepository = classificationWriteRepository;
-   
-            _classificationAttributeValueWriteRepository = classificationAttributeValueWriteRepository;
-            _categoryReadRepository = categoryReadRepository;
-            _productReadRepository = productReadRepository;
-            _unitReadRepository = unitReadRepository;
+            _classificationWriteRepository = classificationWriteRepository;   
+            _mapper = mapper;
             _optionsService = optionsService;
         }
-        public async Task<bool> saveClassification(ClassificationDto classificationDto)
+        public async Task<bool> Save(ClassificationDto classificationDto)
         {
             
             Classification classification = new();
@@ -72,14 +66,17 @@ namespace Persistence.Services
 
         }
 
-
-
-        public async Task<List<Classification>> getAll()
+        public async Task<List<Classification>> GetAllClassifications()
         {
             List<Classification> classifications = await _classificationReadRepository.GetAllWithInclude(true,x=> x.Options).ToListAsync();
             return classifications;
         }
 
-        
+        public async Task<ClassificationDto> GetClassificationByCode(string code)
+        {
+            var classification = await _classificationReadRepository.GetWhereWithInclude(x => x.Code == code, true, x => x.Options).FirstOrDefaultAsync();
+            var classificationDto = _mapper.Map<ClassificationDto>(classification);
+            return classificationDto;
+        }
     }
 }

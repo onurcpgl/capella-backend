@@ -9,6 +9,8 @@ namespace Application.Services.Variant
 {
     public interface IVariantService
     {
-        Task<bool> save(VariantDto variantDto);
+        Task<bool> Save(VariantDto variantDto);
+        Task<List<VariantDto>> GetAllVariants();
+        Task<VariantDto> GetVariantByCode(string code);
     }
 }

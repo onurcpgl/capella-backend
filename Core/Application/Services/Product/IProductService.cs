@@ -12,8 +12,8 @@ namespace Application.Services
     public interface IProductService
     {
         //Task<bool> saveProduct(ProductDto productDto, List<IFormFile> formFiles);
-        Task<bool> saveProduct(ProductDto productDto);
-        Task<List<Product>> productList();
+        Task<bool> Save(ProductDto productDto);
+        Task<List<Product>> GetAllProducts();
         Task<ProductDto> GetProductByCode(string code);
     }
 }

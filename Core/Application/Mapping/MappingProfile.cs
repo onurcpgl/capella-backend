@@ -57,12 +57,31 @@ namespace Application.Mapping
             #endregion
 
             #region ClassificationAttributeValue Mapper
-            CreateMap<ClassificationAttributeValue, ClassificationAttributeValueDto>()
-                .ReverseMap();
+            CreateMap<ClassificationAttributeValue, ClassificationAttributeValueDto>().ReverseMap();
             #endregion
 
             #region Options Mapper
             CreateMap<Options, OptionsDto>().ReverseMap();
+            #endregion
+
+            #region Variant Mapper
+            CreateMap<Variant, VariantDto>().ReverseMap();
+            #endregion
+
+            #region VariantValue Mapper
+            CreateMap<VariantValue, VariantValueDto>().ReverseMap();
+            #endregion
+
+            #region VariantItem Mapper
+            CreateMap<VariantItem, VariantItemDto>().ReverseMap();
+            #endregion
+
+            #region Brand Mapper
+            CreateMap<Brand, BrandDto>().ReverseMap();
+            #endregion
+
+            #region Tag Mapper
+            CreateMap<Tag, TagDto>().ReverseMap();
             #endregion
 
         }

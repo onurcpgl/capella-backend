@@ -23,6 +23,21 @@ namespace Persistence.Services
             _tagWriteRepository = tagWriteRepository;
             _mapper = mapper;
         }
+
+        public async Task<List<TagDto>> GetAllTags()
+        {
+            var tags = _tagReadRepository.GetAll().ToList();
+            var tagsDto = _mapper.Map<List<TagDto>>(tags);
+            return tagsDto;
+        }
+
+        public async Task<TagDto> GetTagByCode(string code)
+        {
+            var tag = _tagReadRepository.GetWhere(x => x.Code == code).FirstOrDefault();
+            var tagDto = _mapper.Map<TagDto>(tag);
+            return tagDto;
+        }
+
         public async Task<bool> Save(TagDto tagDto)
         {
             Tag tag = new();

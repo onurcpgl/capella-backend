@@ -23,6 +23,14 @@ namespace Persistence.Services
             _brandWriteRepository = brandWriteRepository;
             _mapper = mapper;
         }
+
+        public async Task<BrandDto> GetBrandByCode(string code)
+        {
+            var brand = _brandReadRepository.GetWhere(x => x.Code == code).FirstOrDefault();
+            var brandDto = _mapper.Map<BrandDto>(brand);
+            return brandDto;
+        }
+
         public async Task<bool> Save(BrandDto brandDto)
         {
             Brand brand = new();

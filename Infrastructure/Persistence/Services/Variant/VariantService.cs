@@ -2,6 +2,7 @@
 using Application.Repositories;
 using Application.Services;
 using Application.Services.Variant;
+using AutoMapper;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -16,14 +17,31 @@ namespace Persistence.Services
         private readonly IVariantWriteRepository _variantWriteRepository;
         private readonly IVariantReadRepository _variantReadRepository;
         private readonly IVariantValueService _variantValueService;
+        private readonly IMapper _mapper;
 
-        public VariantService(IVariantWriteRepository variantWriteRepository, IVariantReadRepository variantReadRepository, IVariantValueService variantValueService)
+        public VariantService(IVariantWriteRepository variantWriteRepository, IVariantReadRepository variantReadRepository, IVariantValueService variantValueService, IMapper mapper)
         {
             _variantReadRepository = variantReadRepository;
             _variantWriteRepository = variantWriteRepository;
             _variantValueService = variantValueService;
+            _mapper = mapper;
         }
-        public async Task<bool> save(VariantDto variantDto)
+
+        public async Task<List<VariantDto>> GetAllVariants()
+        {
+            var variants = _variantReadRepository.GetAllWithInclude(true, x => x.VariantValues).ToList();
+            var variantsDto = _mapper.Map<List<VariantDto>>(variants);
+            return variantsDto;
+        }
+
+        public async Task<VariantDto> GetVariantByCode(string code)
+        {
+            var variant = _variantReadRepository.GetWhereWithInclude(x => x.Code == code, true, x => x.VariantValues).FirstOrDefault();
+            var variantDto = _mapper.Map<VariantDto>(variant);
+            return variantDto;
+        }
+
+        public async Task<bool> Save(VariantDto variantDto)
         {
             Variant variant = new();
 

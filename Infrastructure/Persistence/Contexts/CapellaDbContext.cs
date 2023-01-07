@@ -30,6 +30,7 @@ namespace Persistence.Contexts
         public DbSet<VariantValue> VariantValues { get; set; }
         public DbSet<VariantItem> VariantItems { get; set; }
         public DbSet<Brand> Brands { get; set; }
+        public DbSet<Tag> Tags { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

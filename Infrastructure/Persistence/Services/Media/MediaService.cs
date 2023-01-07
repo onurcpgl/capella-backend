@@ -29,7 +29,7 @@ namespace Persistence.Services
             _mediaWriteRepository = mediaWriteRepository;
             _mediaFormatReadRepository = mediaFormatReadRepository;
         }
-        public async Task<Media> storage(IFormFile formFile, bool secure)
+        public async Task<Media> Storage(IFormFile formFile, bool secure)
         { 
             
             try
@@ -72,7 +72,7 @@ namespace Persistence.Services
             }
         }
 
-        public async Task<Gallery> saveGallery(IFormFile formFile, bool secure)
+        public async Task<Gallery> SaveGallery(IFormFile formFile, bool secure)
         {
             try
             {

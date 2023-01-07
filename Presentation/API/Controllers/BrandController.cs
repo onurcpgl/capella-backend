@@ -16,7 +16,7 @@ namespace API.Controllers
         }
 
         [HttpPost("/brand")]
-        public async Task<IActionResult> AddBrand([FromBody] BrandDto brandDto)
+        public async Task<IActionResult> Save([FromBody] BrandDto brandDto)
         {
             var result = await _brandService.Save(brandDto);
             if (!result)
@@ -28,6 +28,13 @@ namespace API.Controllers
                 return Ok(true);
             }
 
+        }
+
+        [HttpGet("/brands/{code}")]
+        public async Task<ActionResult> GetBrandByCode([FromRoute] string code)
+        {
+            var result = await _brandService.getBrandByCode(code);
+            return Ok(result);
         }
     }
 }

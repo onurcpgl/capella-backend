@@ -17,26 +17,29 @@ namespace Persistence.Services
         private readonly IRoleReadRepository _roleReadRepository;
         private readonly IRoleWriteRepository _roleWriteRepository;
         private readonly IPermissionReadRepository _permissionReadRepository;
-        public RoleService(IRoleReadRepository roleReadRepository, IRoleWriteRepository roleWriteRepository, IPermissionReadRepository permissionReadRepository)
+        private readonly IMapper _mapper;
+        public RoleService(IRoleReadRepository roleReadRepository, IRoleWriteRepository roleWriteRepository, IPermissionReadRepository permissionReadRepository, IMapper mapper)
         {
             _roleReadRepository = roleReadRepository;
             _roleWriteRepository = roleWriteRepository;
             _permissionReadRepository = permissionReadRepository;
+            _mapper = mapper;
         }
 
-        public async Task<List<Role>> getAll()
+        public async Task<List<Role>> GetAllRoles()
         {
             List<Role> roles = await _roleReadRepository.GetAll().Include(x => x.Permissions).ToListAsync();
             return roles;
         }
 
-        public async Task<Role> getRoleById(int roleId)
+        public async Task<RoleDto> GetRoleByCode(string code)
         {
-            var role = await _roleReadRepository.GetWhereWithInclude(x=> x.Id == roleId,true, x => x.Permissions).FirstOrDefaultAsync();
-            return role;
+            var role = _roleReadRepository.GetWhere(x => x.Code == code).FirstOrDefault();
+            var roleDto = _mapper.Map<RoleDto>(role);
+            return roleDto;
         }
 
-        public async Task<bool> save(RoleDto roleDto)
+        public async Task<bool> Save(RoleDto roleDto)
         {
             Role role = new();
             role.Name = roleDto.Name;
@@ -51,5 +54,7 @@ namespace Persistence.Services
             var result = await _roleWriteRepository.AddAsync(role);
             return result;
         }
+
+
     }
 }

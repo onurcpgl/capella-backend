@@ -13,7 +13,6 @@ namespace Domain.Entities
         public string Code { get; set; }
         public string Name { get; set; }
         public DataType ChooseType { get; set; }
-        public ICollection<Product> Products { get; set; }
         public ICollection<VariantValue> VariantValues { get; set; }
     }
 }
