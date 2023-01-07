@@ -45,6 +45,7 @@ namespace Persistence.Services
             user.IsActive = true;
             user.IsDeleted = false;
             user.Email = userDto.Email;
+   
             var roles = new HashSet<Role>();
             var role = _roleReadRepository.GetWhere(role => role.Code == "user").FirstOrDefault();
             roles.Add(role);
@@ -66,5 +67,16 @@ namespace Persistence.Services
             return userDto;
         }
 
+        public async Task Update(UserDto userDto)
+        {
+            var user = _mapper.Map<User>(userDto);
+            await _userWriteRepository.UpdateAsync(user, userDto.Id);
+        }
+
+        public async Task Delete(string username)
+        {
+            var user = _userReadRepository.GetWhere(x => x.Username == username).FirstOrDefault();
+            await _userWriteRepository.RemoveAsync(user);
+        }
     }
 }

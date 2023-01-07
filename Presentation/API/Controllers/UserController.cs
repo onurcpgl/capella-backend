@@ -57,5 +57,33 @@ namespace API.Controllers
             return Ok(response);
         }
 
+        [HttpPut("/user")]
+        public async Task<IActionResult> Update([FromBody] UserDto userDto)
+        {
+            _logger.LogInformation("Inside Update of UserController", userDto);
+            await _userService.Update(userDto);
+            var response = new ServiceResponseData
+            {
+                Status = ProcessStatus.SUCCESS
+
+            };
+            return Ok(response);
+
+        }
+
+        [HttpDelete("/user/{username}")]
+        public async Task<IActionResult> Delete(string username)
+        {
+            _logger.LogInformation("Inside Delete of UserController", username);
+            await _userService.Delete(username);
+            var response = new ServiceResponseData
+            {
+                Status = ProcessStatus.SUCCESS
+
+            };
+            return Ok(response);
+
+        }
+
     }
 }

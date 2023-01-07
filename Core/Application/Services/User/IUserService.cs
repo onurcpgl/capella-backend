@@ -14,5 +14,7 @@ namespace Application.Services
         Task<List<UserDto>> GetAllUsers();
         Task<User> loadByUser(LoginDto loginDto);
         Task<UserDto> GetUserByUsername(string username);
+        Task Update(UserDto userDto);
+        Task Delete(string username);
     }
 }
