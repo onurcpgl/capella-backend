@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.DataTransferObject.Common;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,11 @@ namespace Application.DataTransferObject
 {
     public class RoleDto
     {
-        public string Name { get; set; }
+        public int Id { get; set; }
+        public string? Code { get; set; }
+        public string? Name { get; set; }
         public bool IsActive { get; set; }
-        public ICollection<PermissionDto> Permissions { get; set; }
+        public ICollection<PermissionDto>? Permissions { get; set; }
 
     }
 }

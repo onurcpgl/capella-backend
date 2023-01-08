@@ -1,8 +1,9 @@
 ﻿namespace API.Utilities.ResponseData
 {
-    public enum ProcessStatus
+    public static class ProcessStatus
     {
-        SUCCESS,
-        ERROR
+        public static readonly string SUCCESS = "Success";
+        public static readonly string ERROR = "Error";
+        
     }
 }
