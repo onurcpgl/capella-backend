@@ -36,8 +36,7 @@ namespace Application.Mapping
             #endregion
 
             #region User Mapper
-            CreateMap<User, UserDto>()
-            .ForMember(dest => dest.Permissions, opt => opt.MapFrom(src => src.Roles.SelectMany(r => r.Permissions)));
+            CreateMap<User, UserDto>().ReverseMap();
             #endregion
 
             #region Role Mapper

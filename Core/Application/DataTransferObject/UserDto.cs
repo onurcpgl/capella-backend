@@ -20,7 +20,6 @@ namespace Application.DataTransferObject
         public bool? IsDeleted { get; set; }
         public ISet<Address>? Addresses { get; set; }
         public ISet<RoleDto>? Roles { get; set; }
-        public ISet<PermissionDto>? Permissions { get; set; }
       
     }
 }
