@@ -71,5 +71,18 @@ namespace API.Controllers
             return Ok(response);
 
         }
+
+        [HttpGet("/brands")]
+        public async Task<IActionResult> GetBrands()
+        {
+            _logger.LogInformation("Inside GetBrands of BrandController");
+            var brands = await _brandService.GetAllBrands();
+            var response = new ServiceResponseData
+            {
+                Status = ProcessStatus.SUCCESS,
+                Data = brands
+            };
+            return Ok(response);
+        }
     }
 }

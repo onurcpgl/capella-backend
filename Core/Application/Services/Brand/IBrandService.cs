@@ -13,5 +13,6 @@ namespace Application.Services
         Task<BrandDto> GetBrandByCode(string code);
         Task Update(BrandDto brandDto);
         Task Delete(string code);
+        Task<List<BrandDto>> GetAllBrands();
     }
 }

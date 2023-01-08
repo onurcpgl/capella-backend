@@ -30,6 +30,13 @@ namespace Persistence.Services
             await _brandWriteRepository.RemoveAsync(brand);
         }
 
+        public async Task<List<BrandDto>> GetAllBrands()
+        {
+            var brands = _brandReadRepository.GetAll().ToList();
+            var brandDto = _mapper.Map<List<BrandDto>>(brands);
+            return brandDto;
+        }
+
         public async Task<BrandDto> GetBrandByCode(string code)
         {
             var brand = _brandReadRepository.GetWhere(x => x.Code == code).FirstOrDefault();
