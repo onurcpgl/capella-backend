@@ -10,6 +10,11 @@ namespace Application.DataTransferObject
 {
     public class RoleDto
     {
+        public RoleDto()
+        {
+            Permissions = new HashSet<PermissionDto>();
+        }
+
         public int Id { get; set; }
         public string? Code { get; set; }
         public string? Name { get; set; }

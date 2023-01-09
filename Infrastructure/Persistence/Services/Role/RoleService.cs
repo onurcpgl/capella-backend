@@ -50,6 +50,7 @@ namespace Persistence.Services
         {
             Role role = new();
             role.Name = roleDto.Name;
+            role.Code = roleDto.Code;
             role.IsActive = roleDto.IsActive;
             var permissions = new HashSet<Domain.Entities.Permission>();
             foreach (var item in roleDto.Permissions)
