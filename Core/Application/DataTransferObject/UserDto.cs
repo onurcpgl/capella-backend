@@ -10,6 +10,11 @@ namespace Application.DataTransferObject
 {
     public class UserDto: BaseDto
     {
+        public UserDto()
+        {
+            Addresses = new HashSet<AddressDto>();
+            Roles = new HashSet<RoleDto>();
+        }
         public string Username { get; set; }
         public string? Firstname { get; set; }
         public string? Lastname { get; set; }
@@ -18,7 +23,7 @@ namespace Application.DataTransferObject
         public string? Email { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsDeleted { get; set; }
-        public ISet<Address>? Addresses { get; set; }
+        public ISet<AddressDto>? Addresses { get; set; }
         public ISet<RoleDto>? Roles { get; set; }
       
     }
