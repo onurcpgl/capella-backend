@@ -24,6 +24,12 @@ namespace Persistence.Services
             _mapper = mapper;
         }
 
+        public async Task Delete(string code)
+        {
+            var tag = _tagReadRepository.GetWhere(x => x.Code == code).FirstOrDefault();
+            await _tagWriteRepository.RemoveAsync(tag);
+        }
+
         public async Task<List<TagDto>> GetAllTags()
         {
             var tags = _tagReadRepository.GetAll().ToList();
@@ -46,7 +52,12 @@ namespace Persistence.Services
             tag.Name = tagDto.Name;
 
             await _tagWriteRepository.AddAsync(tag);
-          
+        }
+
+        public async Task Update(TagDto tagDto)
+        {
+            var tag = _mapper.Map<Tag>(tagDto);
+            await _tagWriteRepository.UpdateAsync(tag, tag.Id);
         }
     }
 }

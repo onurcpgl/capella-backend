@@ -8,6 +8,7 @@ namespace Application.DataTransferObject
 {
     public class ProductDto
     {
+        public string Code { get; set; }
         public string? Name { get; set; }
         public bool Active { get; set; }
         public bool Deleted { get; set; }

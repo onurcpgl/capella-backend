@@ -26,6 +26,12 @@ namespace Persistence.Services
             _mapper = mapper;
         }
 
+        public async Task Delete(string code)
+        {
+            var role = _roleReadRepository.GetWhere(x => x.Code == code).FirstOrDefault();
+            await _roleWriteRepository.RemoveAsync(role);
+        }
+
         public async Task<List<RoleDto>> GetAllRoles()
         {
             var roles = await _roleReadRepository.GetAll().Include(x => x.Permissions).ToListAsync();
@@ -55,6 +61,19 @@ namespace Persistence.Services
             await _roleWriteRepository.AddAsync(role);
         }
 
-
+        public async Task Update(RoleDto roleDto)
+        {
+            var role = await _roleReadRepository.GetWhere(x => x.Code == roleDto.Code).Include(x => x.Permissions).FirstOrDefaultAsync();
+            role.Name = roleDto.Name;
+            role.IsActive = roleDto.IsActive;
+            var permissions = new HashSet<Domain.Entities.Permission>();
+            foreach (var item in roleDto.Permissions)
+            {
+                var permission = _permissionReadRepository.GetWhere(x => x.Code == item.Code).FirstOrDefault();
+                permissions.Add(permission);
+            }
+            role.Permissions = permissions;
+            await _roleWriteRepository.UpdateAsync(role,role.Id);
+        }
     }
 }

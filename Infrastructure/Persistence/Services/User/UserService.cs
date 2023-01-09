@@ -1,7 +1,6 @@
 ﻿using Application.DataTransferObject;
 using Application.Repositories;
 using Application.Services;
-using Application.Services.Address;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -19,15 +18,19 @@ namespace Persistence.Services
         private readonly IUserReadRepository _userReadRepository;
         private readonly IUserWriteRepository _userWriteRepository;
         private readonly IRoleReadRepository _roleReadRepository;
-        private readonly IAddressService _addressService;
-        private readonly IRoleService _roleService;
+        private readonly IAddressReadRepository _adressReadRepository;
         private readonly IMapper _mapper;
 
-        public UserService(IUserReadRepository userReadRepository, IUserWriteRepository userWriteRepository, IRoleReadRepository roleReadRepository, IMapper mapper)
+        public UserService( IUserReadRepository userReadRepository, 
+                            IUserWriteRepository userWriteRepository, 
+                            IRoleReadRepository roleReadRepository,
+                            IAddressReadRepository addressReadRepository,
+                            IMapper mapper)
         {
             _userReadRepository = userReadRepository;
             _userWriteRepository = userWriteRepository;
             _roleReadRepository = roleReadRepository;
+            _adressReadRepository = addressReadRepository;
             _mapper = mapper;
         }
 
@@ -83,15 +86,21 @@ namespace Persistence.Services
             user.Email = userDto.Email;
 
             var roles = new HashSet<Role>();
-            if(userDto.Roles.Count > 0)
+            foreach (var item in userDto.Roles)
             {
-                foreach (var item in userDto.Roles)
-                {
-                    var role = _roleReadRepository.GetWhere(role => role.Code == item.Code).FirstOrDefault();
-                    roles.Add(role);
-                }
-            }      
+                var role = _roleReadRepository.GetWhere(role => role.Code == item.Code).FirstOrDefault();
+                roles.Add(role);
+            }
             user.Roles = roles;
+
+            var addresses = new HashSet<Address>();
+            foreach(var item in userDto.Addresses)
+            {
+                var address = _adressReadRepository.GetWhere(address => address.Code == item.Code).FirstOrDefault();
+                addresses.Add(address);
+            }
+            user.Addresses = addresses;
+
             await _userWriteRepository.UpdateAsync(user,user.Id);
 
         }

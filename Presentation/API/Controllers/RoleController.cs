@@ -56,5 +56,33 @@ namespace API.Controllers
             };
             return Ok(response);
         }
+
+        [HttpPut("/roles")]
+        public async Task<IActionResult> Update([FromBody] RoleDto roleDto)
+        {
+            _logger.LogInformation("Inside Update of RoleController", roleDto);
+            await _roleService.Update(roleDto);
+            var response = new ServiceResponseData
+            {
+                Status = ProcessStatus.SUCCESS
+
+            };
+            return Ok(response);
+
+        }
+
+        [HttpDelete("/roles/{code}")]
+        public async Task<IActionResult> Delete(string code)
+        {
+            _logger.LogInformation("Inside Delete of RoleController", code);
+            await _roleService.Delete(code);
+            var response = new ServiceResponseData
+            {
+                Status = ProcessStatus.SUCCESS
+
+            };
+            return Ok(response);
+
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using API.Filters;
+using API.Utilities.ResponseData;
 using Application.DataTransferObject;
 using Application.Repositories.ProductAbstract;
 using Application.Services;
@@ -24,48 +25,74 @@ namespace API.Controllers
             _logger = logger;
         }
 
-        [HttpPost("/product")]
+        [HttpPost("/products")]
         //[ServiceFilter(typeof(CustomAuthorizationFilter)), PermissionAttribute("product_added")]
-        //public async Task<IActionResult> AddProduct([FromForm] AddProductRequest addProductRequest)
-        public async Task<IActionResult> Save([FromBody] ProductDto productDto)
+        public async Task<IActionResult> AddProduct([FromForm] AddProductRequest addProductRequest)
         {
-            //ProductDto productDto = JsonConvert.DeserializeObject<ProductDto>(addProductRequest.ProductData);
-            //var result = await _productService.saveProduct(productDto, addProductRequest.Galleries);
-            var result = await _productService.Save(productDto);
-            if (!result)
+            _logger.LogInformation("Inside Save of ProductController", addProductRequest);
+            ProductDto productDto = JsonConvert.DeserializeObject<ProductDto>(addProductRequest.ProductData);
+            await _productService.Save(productDto, addProductRequest.Galleries);
+            var response = new ServiceResponseData
             {
-                return BadRequest();
-            }else
-            {
-                return Ok(true);
-            }
-            
+                Status = ProcessStatus.SUCCESS
+            };
+            return Ok(response);
+
         }
 
         [HttpGet("/products")]
         public async Task<IActionResult> GetProducts()
         {
-            _logger.LogInformation("Ürünlerin tamamını listeleme isteği geldi.");
-            List<Product> products = await _productService.GetAllProducts();
-            if(products.Count == 0)
+            _logger.LogInformation("Inside GetProducts of ProductController");
+            var products = await _productService.GetAllProducts();
+            var response = new ServiceResponseData
             {
-                throw new Exception("Hata liste boş");
-            }
-            return Ok(products);
+                Status = ProcessStatus.SUCCESS,
+                Data = products
+            };
+            return Ok(response);
         }
 
         [HttpGet("/products/{code}")]
         public async Task<IActionResult> GetProductByCode(string code)
         {
+            _logger.LogInformation("Inside GetProductByCode of ProductController",code);
             var product = await _productService.GetProductByCode(code);
-
-            if(product is null)
+            var response = new ServiceResponseData
             {
-                return BadRequest();
-            }
+                Status = ProcessStatus.SUCCESS,
+                Data = product
+            };
+            return Ok(response);
+        }
 
-            return Ok(product);
-           
+        [HttpPut("/products")]
+        public async Task<IActionResult> Update([FromForm] AddProductRequest addProductRequest)
+        {
+            _logger.LogInformation("Inside Update of ProductController", addProductRequest);
+            ProductDto productDto = JsonConvert.DeserializeObject<ProductDto>(addProductRequest.ProductData);
+            await _productService.Update(productDto,addProductRequest.Galleries);
+            var response = new ServiceResponseData
+            {
+                Status = ProcessStatus.SUCCESS
+
+            };
+            return Ok(response);
+
+        }
+
+        [HttpDelete("/products/{code}")]
+        public async Task<IActionResult> Delete(string code)
+        {
+            _logger.LogInformation("Inside Delete of ProductController", code);
+            await _productService.Delete(code);
+            var response = new ServiceResponseData
+            {
+                Status = ProcessStatus.SUCCESS
+
+            };
+            return Ok(response);
+
         }
     }
 }

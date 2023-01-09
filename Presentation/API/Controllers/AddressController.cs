@@ -1,6 +1,6 @@
 ﻿using API.Utilities.ResponseData;
 using Application.DataTransferObject;
-using Application.Services.Address;
+using Application.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

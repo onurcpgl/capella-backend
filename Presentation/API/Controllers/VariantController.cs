@@ -56,5 +56,33 @@ namespace API.Controllers
             };
             return Ok(response);
         }
+
+        [HttpPut("/variants")]
+        public async Task<IActionResult> Update([FromBody] VariantDto variantDto)
+        {
+            _logger.LogInformation("Inside Update of VariantController", variantDto);
+            await _variantService.Update(variantDto);
+            var response = new ServiceResponseData
+            {
+                Status = ProcessStatus.SUCCESS
+
+            };
+            return Ok(response);
+
+        }
+
+        [HttpDelete("/variants/{code}")]
+        public async Task<IActionResult> Delete(string code)
+        {
+            _logger.LogInformation("Inside Delete of VariantController", code);
+            await _variantService.Delete(code);
+            var response = new ServiceResponseData
+            {
+                Status = ProcessStatus.SUCCESS
+
+            };
+            return Ok(response);
+
+        }
     }
 }

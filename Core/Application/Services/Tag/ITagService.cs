@@ -12,5 +12,7 @@ namespace Application.Services
         Task Save(TagDto tagDto);
         Task<TagDto> GetTagByCode(string code);
         Task<List<TagDto>> GetAllTags();
+        Task Update(TagDto tagDto);
+        Task Delete(string code);
     }
 }

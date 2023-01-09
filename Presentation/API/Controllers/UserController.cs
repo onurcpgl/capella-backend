@@ -18,7 +18,7 @@ namespace API.Controllers
             _logger = logger;
         }
 
-        [HttpPost("/user")]
+        [HttpPost("/users")]
         public async Task<IActionResult> Save([FromBody] UserDto userDto)
         {
             _logger.LogInformation("Inside Save of UserController", userDto);
@@ -31,7 +31,7 @@ namespace API.Controllers
 
         }
 
-        [HttpGet("/user")]
+        [HttpGet("/users")]
         public async Task<IActionResult> GetUsers()
         {
             _logger.LogInformation("Inside GetUsers of UserController");
@@ -57,7 +57,7 @@ namespace API.Controllers
             return Ok(response);
         }
 
-        [HttpPut("/user")]
+        [HttpPut("/users")]
         public async Task<IActionResult> Update([FromBody] UserDto userDto)
         {
             _logger.LogInformation("Inside Update of UserController", userDto);
@@ -71,7 +71,7 @@ namespace API.Controllers
 
         }
 
-        [HttpDelete("/user/{username}")]
+        [HttpDelete("/users/{username}")]
         public async Task<IActionResult> Delete(string username)
         {
             _logger.LogInformation("Inside Delete of UserController", username);

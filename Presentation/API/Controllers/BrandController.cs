@@ -18,7 +18,7 @@ namespace API.Controllers
             _logger = logger;
         }
 
-        [HttpPost("/brand")]
+        [HttpPost("/brands")]
         public async Task<IActionResult> Save([FromBody] BrandDto brandDto)
         {
             _logger.LogInformation("Inside Save of BrandController", brandDto);
@@ -44,7 +44,7 @@ namespace API.Controllers
             return Ok(response);
         }
 
-        [HttpPut("/brand")]
+        [HttpPut("/brands")]
         public async Task<IActionResult> Update([FromBody] BrandDto brandDto)
         {
             _logger.LogInformation("Inside Update of BrandController", brandDto);
@@ -58,7 +58,7 @@ namespace API.Controllers
 
         }
 
-        [HttpDelete("/brand/{code}")]
+        [HttpDelete("/brands/{code}")]
         public async Task<IActionResult> Delete(string code)
         {
             _logger.LogInformation("Inside Delete of BrandController", code);

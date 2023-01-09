@@ -23,7 +23,7 @@ namespace API.Controllers
             _logger = logger;
         }
 
-        [HttpPost("/classification")]
+        [HttpPost("/classifications")]
         public async Task<IActionResult> Save([FromBody] ClassificationDto classificationDto)
         {
 
@@ -67,6 +67,34 @@ namespace API.Controllers
             };
 
             return Ok(response);
+        }
+
+        [HttpPut("/classifications")]
+        public async Task<IActionResult> Update([FromBody] ClassificationDto classificationDto)
+        {
+            _logger.LogInformation("Inside Update of ClassificationController", classificationDto);
+            await _classificationService.Update(classificationDto);
+            var response = new ServiceResponseData
+            {
+                Status = ProcessStatus.SUCCESS
+
+            };
+            return Ok(response);
+
+        }
+
+        [HttpDelete("/classifications/{code}")]
+        public async Task<IActionResult> Delete(string code)
+        {
+            _logger.LogInformation("Inside Delete of ClassificationController", code);
+            await _classificationService.Delete(code);
+            var response = new ServiceResponseData
+            {
+                Status = ProcessStatus.SUCCESS
+
+            };
+            return Ok(response);
+
         }
 
 

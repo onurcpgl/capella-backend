@@ -45,5 +45,17 @@ namespace Persistence.Services
             var unitsDto = _mapper.Map<List<UnitDto>>(units);
             return unitsDto;
         }
+
+        public async Task Update(UnitDto unitDto)
+        {
+            var unit = _mapper.Map<Unit>(unitDto);
+            await _unitWriteRepository.UpdateAsync(unit, unit.Id);
+        }
+
+        public async Task Delete(string code)
+        {
+            var unit = _unitReadRepository.GetWhere(x => x.Code == code).FirstOrDefault();
+            await _unitWriteRepository.RemoveAsync(unit);
+        }
     }
 }

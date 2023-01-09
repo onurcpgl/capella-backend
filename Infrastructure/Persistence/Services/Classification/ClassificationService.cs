@@ -72,5 +72,28 @@ namespace Persistence.Services
             var classificationDto = _mapper.Map<ClassificationDto>(classification);
             return classificationDto;
         }
+
+        public async Task Update(ClassificationDto classificationDto)
+        {
+            var classification = _classificationReadRepository.GetWhere(x => x.Code == classificationDto.Code).Include(x=> x.Options).FirstOrDefault();
+            classification.Name = classificationDto.Name;
+            classification.Code = classificationDto.Code;
+            classification.DataType = (Domain.Enums.DataType)classificationDto.DataType;
+            var options = new HashSet<Options>();
+            foreach (var item in classificationDto.Options)
+            {
+                var option = await _optionsService.Save(item, classification.Code);
+                options.Add(option);
+
+            }
+            classification.Options = options;
+            await _classificationWriteRepository.UpdateAsync(classification, classification.Id);
+        }
+
+        public async Task Delete(string code)
+        {
+            var classification = _classificationReadRepository.GetWhere(x => x.Code == code).FirstOrDefault();
+            await _classificationWriteRepository.RemoveAsync(classification);
+        }
     }
 }

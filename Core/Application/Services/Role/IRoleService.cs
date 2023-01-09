@@ -13,5 +13,7 @@ namespace Application.Services
         Task Save(RoleDto roleDto);
         Task<List<RoleDto>> GetAllRoles();
         Task<RoleDto> GetRoleByCode(string code);
+        Task Update(RoleDto roleDto);
+        Task Delete(string code);
     }
 }

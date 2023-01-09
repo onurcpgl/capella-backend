@@ -1,7 +1,6 @@
 ﻿using Application.Repositories;
 using Application.Repositories.ProductAbstract;
 using Application.Services;
-using Application.Services.Address;
 using Application.Services.Permission;
 using Application.Services.Token;
 using Application.Services.Variant;

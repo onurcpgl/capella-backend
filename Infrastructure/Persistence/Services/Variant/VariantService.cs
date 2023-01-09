@@ -27,6 +27,12 @@ namespace Persistence.Services
             _mapper = mapper;
         }
 
+        public async Task Delete(string code)
+        {
+            var variant = _variantReadRepository.GetWhere(x => x.Code == code).FirstOrDefault();
+            await _variantWriteRepository.RemoveAsync(variant);
+        }
+
         public async Task<List<VariantDto>> GetAllVariants()
         {
             var variants = _variantReadRepository.GetAllWithInclude(true, x => x.VariantValues).ToList();
@@ -69,6 +75,23 @@ namespace Persistence.Services
             {
                 transaction.Rollback();
             }
+        }
+
+        public async Task Update(VariantDto variantDto)
+        {
+            var variant = _variantReadRepository.GetWhereWithInclude(x => x.Code == variantDto.Code, true, x => x.VariantValues).FirstOrDefault();
+            variant.Name = variantDto.Name;
+            variant.Code = variantDto.Code;
+            variant.ChooseType = (Domain.Enums.DataType)variantDto.ChooseType;
+            var variantValues = new HashSet<VariantValue>();
+            foreach (var item in variantDto.VariantValues)
+            {
+                var variantValue = await _variantValueService.Save(item, variant.Code);
+                variantValues.Add(variantValue);
+
+            }
+            variant.VariantValues = variantValues;
+            await _variantWriteRepository.UpdateAsync(variant,variant.Id);
         }
     }
 }

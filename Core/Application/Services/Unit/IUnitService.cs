@@ -13,5 +13,7 @@ namespace Application.Services
         Task Save(UnitDto unitDto);
         Task<List<UnitDto>> GetAllUnits();
         Task<UnitDto> GetUnitByCode(string code);
+        Task Update(UnitDto unitDto);
+        Task Delete(string code);
     }
 }

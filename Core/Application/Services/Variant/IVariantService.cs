@@ -12,5 +12,7 @@ namespace Application.Services.Variant
         Task Save(VariantDto variantDto);
         Task<List<VariantDto>> GetAllVariants();
         Task<VariantDto> GetVariantByCode(string code);
+        Task Update(VariantDto variantDto);
+        Task Delete(string code);
     }
 }

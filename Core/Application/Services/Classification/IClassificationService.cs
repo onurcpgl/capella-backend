@@ -13,6 +13,8 @@ namespace Application.Services
         Task Save(ClassificationDto classificationDto);
         Task<List<Classification>> GetAllClassifications();
         Task<ClassificationDto> GetClassificationByCode(string code);
+        Task Update(ClassificationDto classificationDto);
+        Task Delete(string code);
 
 
     }

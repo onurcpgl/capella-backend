@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Services.Address
+namespace Application.Services
 {
     public interface IAddressService
     {

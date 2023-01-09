@@ -56,5 +56,33 @@ namespace API.Controllers
             };
             return Ok(response);
         }
+
+        [HttpPut("/tags")]
+        public async Task<IActionResult> Update([FromBody] TagDto tagDto)
+        {
+            _logger.LogInformation("Inside Update of TagController", tagDto);
+            await _tagService.Update(tagDto);
+            var response = new ServiceResponseData
+            {
+                Status = ProcessStatus.SUCCESS
+
+            };
+            return Ok(response);
+
+        }
+
+        [HttpDelete("/tags/{code}")]
+        public async Task<IActionResult> Delete(string code)
+        {
+            _logger.LogInformation("Inside Delete of TagController", code);
+            await _tagService.Delete(code);
+            var response = new ServiceResponseData
+            {
+                Status = ProcessStatus.SUCCESS
+
+            };
+            return Ok(response);
+
+        }
     }
 }

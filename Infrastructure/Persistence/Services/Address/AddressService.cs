@@ -1,6 +1,6 @@
 ﻿using Application.DataTransferObject;
 using Application.Repositories;
-using Application.Services.Address;
+using Application.Services;
 using AutoMapper;
 using Domain.Entities;
 using System;

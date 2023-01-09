@@ -23,7 +23,7 @@ namespace API.Controllers
             _logger = logger;
         }
 
-        [HttpPost("/unit")]
+        [HttpPost("/units")]
         public async Task<IActionResult> Save([FromBody] UnitDto unitDto)
         {
             _logger.LogInformation("Inside Save of UnitController", unitDto);
@@ -59,6 +59,34 @@ namespace API.Controllers
                 Data = unit
             };
             return Ok(response);
+        }
+
+        [HttpPut("/units")]
+        public async Task<IActionResult> Update([FromBody] UnitDto unitDto)
+        {
+            _logger.LogInformation("Inside Update of UnitController", unitDto);
+            await _unitService.Update(unitDto);
+            var response = new ServiceResponseData
+            {
+                Status = ProcessStatus.SUCCESS
+
+            };
+            return Ok(response);
+
+        }
+
+        [HttpDelete("/units/{code}")]
+        public async Task<IActionResult> Delete(string code)
+        {
+            _logger.LogInformation("Inside Delete of UnitController", code);
+            await _unitService.Delete(code);
+            var response = new ServiceResponseData
+            {
+                Status = ProcessStatus.SUCCESS
+
+            };
+            return Ok(response);
+
         }
     }
 }
