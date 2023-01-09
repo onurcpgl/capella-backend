@@ -1,6 +1,7 @@
 ﻿using Application.DataTransferObject;
 using Application.Repositories;
 using Application.Services;
+using Application.Services.Address;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,8 @@ namespace Persistence.Services
         private readonly IUserReadRepository _userReadRepository;
         private readonly IUserWriteRepository _userWriteRepository;
         private readonly IRoleReadRepository _roleReadRepository;
+        private readonly IAddressService _addressService;
+        private readonly IRoleService _roleService;
         private readonly IMapper _mapper;
 
         public UserService(IUserReadRepository userReadRepository, IUserWriteRepository userWriteRepository, IRoleReadRepository roleReadRepository, IMapper mapper)
@@ -69,8 +72,28 @@ namespace Persistence.Services
 
         public async Task Update(UserDto userDto)
         {
-            var user = _mapper.Map<User>(userDto);
-            await _userWriteRepository.UpdateAsync(user, userDto.Id);
+            var user = await _userReadRepository.GetWhere(x => x.Username == userDto.Username).Include(x => x.Roles).FirstOrDefaultAsync();
+            user.Firstname = userDto.Firstname;
+            user.Lastname = userDto.Lastname;
+            user.Username = userDto.Username;
+            user.Password = userDto.Lastname;
+            user.BirthDate = (DateTime)userDto.BirthDate;
+            user.IsActive = (bool)userDto.IsActive;
+            user.IsDeleted = (bool)userDto.IsDeleted;
+            user.Email = userDto.Email;
+
+            var roles = new HashSet<Role>();
+            if(userDto.Roles.Count > 0)
+            {
+                foreach (var item in userDto.Roles)
+                {
+                    var role = _roleReadRepository.GetWhere(role => role.Code == item.Code).FirstOrDefault();
+                    roles.Add(role);
+                }
+            }      
+            user.Roles = roles;
+            await _userWriteRepository.UpdateAsync(user,user.Id);
+
         }
 
         public async Task Delete(string username)
